@@ -5,7 +5,7 @@
     <div class="row g-4">
         <?php
         $products = [
-            ["name" => "สัปปะรดกรอบ", "price" => "150", "img" => "otop/CrispyPineapple.png", "tag" => "ขายดี"],
+            ["name" => "สัปปะรดกรอบ", "price" => "150", "img" => "otop/CrispyPineapple2.png", "tag" => "ขายดี"],
             ["name" => "น้ำพริกเผาลำไย", "price" => "89", "img" => "otop/ChiliSauce.jpg", "tag" => "แนะนำ"],
             ["name" => "เสื่อจันทบูร", "price" => "450", "img" => "otop/Mat.jpg", "tag" => "Handmade"]
         ];

@@ -37,7 +37,8 @@ $product_img = isset($_GET['img']) ? $_GET['img'] : 'otop/CrispyPineapple.jpg';
             margin-top: 50px;
         }
         .product-image {
-            max-width: 500px;
+            width: 500px; /* Ensure consistent width */
+            height: auto; /* Maintain aspect ratio */
             border-radius: 10px;
             margin-right: 30px;
         }
@@ -135,6 +136,8 @@ $product_img = isset($_GET['img']) ? $_GET['img'] : 'otop/CrispyPineapple.jpg';
         function changeMainImage(src, element) {
             const mainImage = document.getElementById('main-product-image');
             mainImage.src = src;
+            mainImage.style.width = '500px'; // Ensure the image width remains the same
+            mainImage.style.height = 'auto'; // Maintain aspect ratio
 
             const thumbnails = document.querySelectorAll('.thumbnails img');
             thumbnails.forEach(thumb => thumb.classList.remove('active'));
@@ -151,13 +154,13 @@ $product_img = isset($_GET['img']) ? $_GET['img'] : 'otop/CrispyPineapple.jpg';
                     <img src="otop/CrispyPineapple2.png" alt="Thumbnail 1" onclick="changeMainImage('otop/CrispyPineapple2.png', this)" class="active">
                     <img src="otop/CrispyPineapple3.png" alt="Thumbnail 2" onclick="changeMainImage('otop/CrispyPineapple3.png', this)">
                     <img src="otop/CrispyPineapple4.png" alt="Thumbnail 3" onclick="changeMainImage('otop/CrispyPineapple4.png', this)">
-                    <img src="otop/CrispyPineapple.png" alt="Thumbnail 4" onclick="changeMainImage('otop/CrispyPineapple.png', this)">
+                    
                 </div>
             </div>
             <div class="product-info">
                 <h2><?= $product_name ?></h2>
-                <p>Price: ฿<?= $product_price ?></p>
-                <p>Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel nisi id odio tincidunt tincidunt.</p>
+                <p>ราคา: ฿<?= $product_price ?></p>
+                <p>คำอธิบาย: สัมผัสความอร่อยจากธรรมชาติแท้ๆ กับ "สับปะรดกรอบ" สินค้า OTOP คุณภาพระดับ 5 ดาว ที่คัดสรรสับปะรดสายพันธุ์ดีที่สุดจากไร่ นำมาผ่านกรรมวิธีที่ได้มาตรฐาน เพื่อรักษารสชาติหวานอมเปรี้ยวอันเป็นเอกลักษณ์ และคุณค่าทางโภชนาการไว้อย่างครบถ้วน</p>
                 <div class="quantity-control">
                     <button onclick="decreaseQuantity()">-</button>
                     <input type="number" id="quantity" value="1" min="1">
