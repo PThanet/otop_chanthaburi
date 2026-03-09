@@ -1,0 +1,44 @@
+<?php 
+include('includes/header.php'); 
+include('includes/db_config.php');
+
+if(isset($_POST['register'])) {
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
+
+    $sql = "INSERT INTO users (username, password, fullname) VALUES ('$username', '$password', '$fullname')";
+    
+    if(mysqli_query($conn, $sql)) {
+        echo "<script>alert('สมัครสมาชิกสำเร็จ!'); window.location='login.php';</script>";
+    } else {
+        echo "<div class='alert alert-danger text-center mt-3'>เกิดข้อผิดพลาดในการสมัครสมาชิก: " . mysqli_error($conn) . "</div>";
+    }
+}
+?>
+
+<div class="container my-5 py-3" style="max-width: 500px;">
+    <div class="card shadow-lg border-0 p-4 card-hover-scale">
+        <h2 class="text-center mb-4 text-primary-color fw-bold">สมัครสมาชิก</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="fullname" class="form-label">ชื่อ-นามสกุล</label>
+                <input type="text" name="fullname" id="fullname" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="username" class="form-label">ชื่อผู้ใช้งาน (Username)</label>
+                <input type="text" name="username" id="username" class="form-control" required>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="form-label">รหัสผ่าน</label>
+                <input type="password" name="password" id="password" class="form-control" required>
+            </div>
+            <button type="submit" name="register" class="btn btn-success w-100 fw-bold rounded-pill btn-hover-shadow">
+                <i class="fas fa-user-plus me-2"></i>สมัครสมาชิก
+            </button>
+        </form>
+        <p class="mt-4 text-center">มีบัญชีแล้ว? <a href="login.php" class="text-decoration-none fw-bold">เข้าสู่ระบบ</a></p>
+    </div>
+</div>
+
+<?php include('includes/footer.php'); ?>
