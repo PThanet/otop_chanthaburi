@@ -9,7 +9,7 @@
                     <i class="fas fa-user-graduate fa-4x text-primary"></i>
                 </div>
                 <h3 class="fw-bold">สมาชิกคนที่ 1</h3>
-                <p class="text-muted">นาย [ชื่อ-นามสกุล]</p>
+                <p class="text-muted">นายธนากร จินดา</p>
                 <div class="bg-primary text-white py-2 rounded-pill fw-bold mt-2">รหัส: 2681032341117</div>
             </div>
         </div>
@@ -19,7 +19,7 @@
                     <i class="fas fa-user-graduate fa-4x text-primary"></i>
                 </div>
                 <h3 class="fw-bold">สมาชิกคนที่ 2</h3>
-                <p class="text-muted">นาย [ชื่อ-นามสกุล]</p>
+                <p class="text-muted">นายธเนตร พูลสุข</p>
                 <div class="bg-primary text-white py-2 rounded-pill fw-bold mt-2">รหัส: 2681032341175</div>
             </div>
         </div>

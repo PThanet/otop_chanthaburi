@@ -1,7 +1,7 @@
 <?php include('includes/header.php'); ?>
 
 <style>
-    /* แก้ไขส่วนพื้นหลังที่ดูจืดชืด ให้ดู Pro ขึ้น */
+    /* แก้ไขส่วนพื้นหลังที่ดูจืดชืด ให้ดู Modern ขึ้น */
     .hero-premium {
         position: relative;
         padding: 160px 0;
@@ -75,7 +75,8 @@
         <p>สัมผัสเสน่ห์ตะวันออก พลอยสวย ผลไม้เด่น รักษ์ประเพณี <br> มหัศจรรย์แห่งวิถีชุมชนที่งดงาม</p>
         <div class="d-flex justify-content-center gap-3">
             <a href="product.php" class="btn btn-custom btn-gold-pro">ช้อปสินค้า OTOP</a>
-            <a href="travel.php" class="btn btn-custom btn-outline-pro">ดูที่เที่ยว</a>
+            <a href="travel.php" class="btn btn-custom btn-gold-pro">สถานที่ท่องเที่ยว</a>
+            <a href="tradition.php" class="btn btn-custom btn-gold-pro">ประเพณี</a>
         </div>
     </div>
 </div>
