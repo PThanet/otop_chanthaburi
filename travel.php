@@ -1,4 +1,7 @@
-<?php include('includes/header.php'); ?>
+<?php 
+include('includes/header.php'); 
+include('includes/db_config.php'); // เพิ่มการเชื่อมต่อฐานข้อมูล
+?>
 
 <style>
     .travel-card {
@@ -71,50 +74,31 @@
 
     <div class="row g-4">
         <?php
-        // ข้อมูลสถานที่ท่องเที่ยวที่ปรับปรุงรูปภาพและคำบรรยาย
-        $places = [
-            [
-                "name" => "น้ำตกพลิ้ว", 
-                "desc" => "สัมผัสน้ำตกสวยใสใจกลางป่า พร้อมฝูงปลาพลวงหินที่เป็นเอกลักษณ์", 
-                "img" => "https://images.unsplash.com/photo-1589394815804-c14192273482?w=800&q=80",
-                "tag" => "ธรรมชาติ"
-            ],
-            [
-                "name" => "หาดเจ้าหลาว", 
-                "desc" => "ชายหาดทรายนวลละเอียด บรรยากาศเงียบสงบ เหมาะแก่การพักผ่อนชมพระอาทิตย์ตก", 
-                "img" => "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
-                "tag" => "ทะเล"
-            ],
-            [
-                "name" => "คุกขี้ไก่", 
-                "desc" => "ร่องรอยประวัติศาสตร์สมัย ร.ศ. 112 โบราณสถานที่สำคัญของเมืองจันทบุรี", 
-                "img" => "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80",
-                "tag" => "ประวัติศาสตร์"
-            ],
-            [
-                "name" => "ศูนย์ป่าชายเลน", 
-                "desc" => "เดินศึกษาธรรมชาติบนสะพานไม้ผ่านผืนป่าชายเลนที่อุดมสมบูรณ์ที่สุดแห่งหนึ่ง", 
-                "img" => "https://images.unsplash.com/photo-1627889606869-7d0c3e7b1a2a?w=800&q=80",
-                "tag" => "การเรียนรู้"
-            ]
-        ];
+        // ดึงข้อมูลสถานที่ท่องเที่ยวจากฐานข้อมูล
+        $sql = "SELECT * FROM travel_places ORDER BY id ASC";
+        $result = mysqli_query($conn, $sql);
 
-        foreach($places as $place): ?>
-            <div class="col-lg-6">
-                <div class="travel-card shadow">
-                    <div class="travel-img-wrapper">
-                        <img src="<?= $place['img'] ?>" alt="<?= $place['name'] ?>">
-                        <div class="location-tag"><?= $place['tag'] ?></div>
-                        <div class="travel-overlay">
-                            <h3 class="fw-bold mb-2"><?= $place['name'] ?></h3>
-                            <p class="mb-0 fw-light" style="font-size: 0.95rem; line-height: 1.6;">
-                                <?= $place['desc'] ?>
-                            </p>
+        if (mysqli_num_rows($result) > 0) {
+            while ($place = mysqli_fetch_assoc($result)): ?>
+                <div class="col-lg-6">
+                    <div class="travel-card shadow">
+                        <div class="travel-img-wrapper">
+                            <img src="<?= htmlspecialchars($place['image_url']) ?>" alt="<?= htmlspecialchars($place['name']) ?>">
+                            <div class="location-tag"><?= htmlspecialchars($place['tag']) ?></div>
+                            <div class="travel-overlay">
+                                <h3 class="fw-bold mb-2"><?= htmlspecialchars($place['name']) ?></h3>
+                                <p class="mb-0 fw-light" style="font-size: 0.95rem; line-height: 1.6;">
+                                    <?= htmlspecialchars($place['description']) ?>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endwhile; 
+        } else {
+            echo "<div class='col-12 text-center text-muted'>ยังไม่มีข้อมูลสถานที่ท่องเที่ยว</div>";
+        }
+        ?>
     </div>
 </div>
 
