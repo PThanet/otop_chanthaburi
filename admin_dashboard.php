@@ -23,6 +23,26 @@ include('includes/db_config.php');
 
 <div class="container my-5">
     
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 bg-light" style="border-radius: 12px;">
+                <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center p-4">
+                    <div class="mb-3 mb-md-0">
+                        <h4 class="mb-1 fw-bold text-dark"><i class="fas fa-tools me-2"></i>จัดการเนื้อหาเว็บไซต์</h4>
+                        <p class="text-muted mb-0 small">เมนูลัดสำหรับเพิ่ม ลบ หรือแก้ไขข้อมูลต่างๆ บนหน้าเว็บ</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="admin_travel.php" class="btn btn-success btn-lg fw-bold rounded-pill shadow-sm px-4">
+                            <i class="fas fa-map-marked-alt me-2"></i>จัดการสถานที่ท่องเที่ยว
+                        </a>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-sm border-0 mb-5" style="border-top: 4px solid #dc3545 !important; border-radius: 12px;">
+...
+    
     <div class="card shadow-sm border-0 mb-5" style="border-top: 4px solid #dc3545 !important; border-radius: 12px;">
         <div class="card-header bg-white py-3">
             <h3 class="fw-bold text-danger mb-0"><i class="fas fa-user-shield me-2"></i>รายชื่อผู้ดูแลระบบ (Admins)</h3>
