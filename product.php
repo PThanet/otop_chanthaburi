@@ -5,9 +5,9 @@
     <div class="row g-4">
         <?php
         $products = [
-            ["name" => "สัปปะรดกรอบ", "price" => "150", "img" => "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=500", "tag" => "ขายดี"],
-            ["name" => "น้ำพริกเผาลำไย", "price" => "89", "img" => "https://images.unsplash.com/photo-1588165171080-c89acfa5ee83?w=500", "tag" => "แนะนำ"],
-            ["name" => "เสื่อจันทบูร", "price" => "450", "img" => "https://images.unsplash.com/photo-1590595906931-81f04f0ccebb?w=500", "tag" => "Handmade"]
+            ["name" => "สัปปะรดกรอบ", "price" => "150", "img" => "otop/CrispyPineapple.png", "tag" => "ขายดี"],
+            ["name" => "น้ำพริกเผาลำไย", "price" => "89", "img" => "otop/ChiliSauce.jpg", "tag" => "แนะนำ"],
+            ["name" => "เสื่อจันทบูร", "price" => "450", "img" => "otop/Mat.jpg", "tag" => "Handmade"]
         ];
 
         foreach($products as $p) { ?>
@@ -18,11 +18,11 @@
                         <span class="badge bg-danger mb-2"><?= $p['tag'] ?></span>
                         <h4 class="fw-bold"><?= $p['name'] ?></h4>
                         <p class="text-success fs-4 fw-bold mb-3">฿<?= $p['price'] ?></p>
-                        <button class="btn btn-primary w-100 rounded-pill">รายละเอียดสินค้า</button>
+                        <a href="order.php?name=<?= urlencode($p['name']) ?>&price=<?= $p['price'] ?>&img=<?= urlencode($p['img']) ?>" class="btn btn-primary w-100 rounded-pill">สั่งซื้อ</a>
                     </div>
                 </div>
             </div>
-        <?php } // ปิดปีกกาตรงนี้เพื่อแก้ Error Line 21 ?>
+        <?php } ?>
     </div>
 </div>
 
