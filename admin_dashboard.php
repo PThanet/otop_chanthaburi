@@ -54,6 +54,11 @@ include('includes/db_config.php');
                                 <i class="fas fa-shopping-basket me-2"></i>จัดการสินค้า OTOP
                             </a>
                         <?php endif; ?>
+
+                        <a href="admin_orders.php"
+                            class="btn btn-primary btn-lg fw-bold rounded-pill shadow-sm px-4 text-white">
+                            <i class="fas fa-box me-2"></i>จัดการออเดอร์
+                        </a>
                     </div>
                 </div>
             </div>

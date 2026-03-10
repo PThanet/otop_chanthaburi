@@ -51,13 +51,28 @@ include_once __DIR__ . '/cart_functions.php';
 
         .nav-link {
             color: #ffffff !important;
-            margin: 0 10px;
+            margin: 0 15px;
+            padding: 10px 0 !important;
             transition: 0.3s;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            line-height: 1.2;
+            height: 100%;
         }
 
         .nav-link:hover {
             color: var(--gold) !important;
+            border-bottom-color: var(--gold);
             transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            color: var(--gold) !important;
+            border-bottom-color: var(--gold);
+            font-weight: 700;
         }
 
         /* Hero Section (แก้ไขบั๊กพื้นหลังเทา) */
@@ -103,6 +118,22 @@ include_once __DIR__ . '/cart_functions.php';
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
         }
+
+        /* Cart styling */
+        .nav-link[href="cart.php"] {
+            margin-left: 25px !important;
+            font-size: 1.1rem;
+        }
+
+        .nav-link[href="cart.php"]::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            margin-right: 20px;
+            border-radius: 2px;
+        }
     </style>
 </head>
 
@@ -119,6 +150,12 @@ include_once __DIR__ . '/cart_functions.php';
                     <li class="nav-item"><a class="nav-link" href="tradition.php">ประเพณี</a></li>
                     <li class="nav-item"><a class="nav-link" href="travel.php">สถานที่ท่องเที่ยว</a></li>
                     <li class="nav-item"><a class="nav-link" href="team.php">ผู้จัดทำ</a></li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="view_orders.php">
+                            <i class="fas fa-history me-1"></i>ประวัติการสั่ง
+                        </a>
+                    </li>
                     
                     <li class="nav-item ms-lg-2">
                         <a class="nav-link position-relative" href="cart.php" style="font-size: 1.2rem;">
@@ -161,4 +198,21 @@ include_once __DIR__ . '/cart_functions.php';
                 </ul>
             </div>
         </div>
-    </nav>  
+    </nav>
+
+    <script>
+        // Highlight active menu based on current page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.php';
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage || href === '') {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        });
+    </script>

@@ -352,7 +352,7 @@ $total = getCartTotal();
                     <span>฿<?= number_format($total, 2) ?></span>
                 </div>
 
-                <button class="btn-checkout">
+                <button class="btn-checkout" onclick="window.location.href='checkout.php'">
                     <i class="fas fa-credit-card me-2"></i>ชำระเงิน
                 </button>
 
