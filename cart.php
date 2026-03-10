@@ -190,12 +190,19 @@ $total = getCartTotal();
     .btn-continue:hover {
         background: #d0d0d0;
     }
-80px 40px;
+
+    .empty-cart {
+        text-align: center;
+        padding: 80px 40px;
         background: white;
         border-radius: 15px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         margin: 0 auto;
         max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
     .empty-cart i {
@@ -207,7 +214,34 @@ $total = getCartTotal();
     .empty-cart h3 {
         color: #004d40;
         margin-bottom: 15px;
-        font-size: 1.8r992px) {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+    .empty-cart p {
+        color: #999;
+        font-size: 1.05rem;
+        margin: 0;
+    }
+
+    .empty-cart .btn {
+        margin-top: 25px;
+        transition: 0.3s;
+    }
+
+    .empty-cart .btn-primary {
+        background: linear-gradient(135deg, #004d40, #00695c) !important;
+        border: none;
+        padding: 12px 40px;
+        font-size: 1.1rem;
+    }
+
+    .empty-cart .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 77, 64, 0.3);
+    }
+
+    @media (max-width: 992px) {
         .cart-content {
             grid-template-columns: 1fr;
         }
@@ -246,19 +280,7 @@ $total = getCartTotal();
 
         .item-image {
             width: 100px;
-            height: 100px
-        .cart-item {
-            grid-template-columns: 100px 1fr;
-            gap: 15px;
-        }
-
-        .item-actions {
-            grid-column: 1 / -1;
-            text-align: left;
-        }
-
-        .cart-summary {
-            position: static;
+            height: 100px;
         }
     }
 </style>
