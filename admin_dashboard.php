@@ -32,9 +32,15 @@ include('includes/db_config.php');
                         <h4 class="mb-1 fw-bold text-dark"><i class="fas fa-tools me-2"></i>จัดการเนื้อหาเว็บไซต์</h4>
                         <p class="text-muted mb-0 small">เมนูลัดสำหรับเพิ่ม ลบ หรือแก้ไขข้อมูลต่างๆ บนหน้าเว็บ</p>
                     </div>
-                    <div class="d-flex gap-2">
+                    <div class="d-flex flex-wrap gap-2">
                         <a href="admin_travel.php" class="btn btn-success btn-lg fw-bold rounded-pill shadow-sm px-4">
                             <i class="fas fa-map-marked-alt me-2"></i>จัดการสถานที่ท่องเที่ยว
+                        </a>
+                        <a href="admin_tradition.php" class="btn btn-warning btn-lg fw-bold rounded-pill shadow-sm px-4 text-dark">
+                            <i class="fas fa-calendar-alt me-2"></i>จัดการงานประเพณี
+                        </a>
+                        <a href="admin_product.php" class="btn btn-info btn-lg fw-bold rounded-pill shadow-sm px-4 text-white">
+                            <i class="fas fa-shopping-basket me-2"></i>จัดการสินค้า OTOP
                         </a>
                     </div>
                 </div>
