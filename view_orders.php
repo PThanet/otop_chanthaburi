@@ -1,20 +1,21 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
+
+// ถ้าไม่ login ให้โยนไปหน้า login
+if ($user_id <= 0) {
+    header("Location: login.php");
+    exit();
+}
+
 include 'includes/header.php';
 include 'includes/db_config.php';
 
-// แสดงออเดอร์ทั้งหมดหรือของผู้ใช้ที่ login
-$user_id = isset($_SESSION['id']) ? intval($_SESSION['id']) : 0;
-
 $orders = [];
-$where = '';
-
-// ถ้าผู้ใช้ login ให้แสดงแค่ของตัวเอง
-if ($user_id > 0) {
-    $where = "WHERE user_id = $user_id";
-} else {
-    // ถ้าไม่ login ให้แสดงออเดอร์ล่าสุด (ใหม่ 30 วัน)
-    $where = "WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
-}
+$where = "WHERE user_id = $user_id";
 
 $sql = "SELECT * FROM orders $where ORDER BY created_at DESC";
 $result = mysqli_query($conn, $sql);
@@ -348,11 +349,7 @@ if ($result) {
 <div class="container orders-container">
     <div class="orders-header">
         <h2><i class="fas fa-list me-2" style="color: #004d40;"></i>ประวัติการสั่งซื้อ</h2>
-        <?php if ($user_id > 0): ?>
-            <p class="text-muted">ดูประวัติการสั่งซื้อของคุณ</p>
-        <?php else: ?>
-            <p class="text-muted">ดูออเดอร์ล่าสุด 30 วัน</p>
-        <?php endif; ?>
+        <p class="text-muted">ดูประวัติการสั่งซื้อของคุณ</p>
     </div>
 
     <?php if (empty($orders)): ?>
@@ -450,7 +447,7 @@ if ($result) {
                             <a href="order_confirmation.php?order_id=<?= $order['id'] ?>&order_number=<?= htmlspecialchars($order['order_number']) ?>" class="btn-action btn-detail">
                                 <i class="fas fa-eye me-1"></i>ดูรายละเอียด
                             </a>
-                            <button class="btn-action btn-repeat" onclick="alert('ฟีเจอร์นี้อยู่ระหว่างพัฒนา')">
+                            <button class="btn-action btn-repeat" onclick="window.location.href='buy_again.php?order_id=<?= $order['id'] ?>'">
                                 <i class="fas fa-redo me-1"></i>สั่งซื้ออีก
                             </button>
                         </div>

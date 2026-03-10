@@ -19,7 +19,7 @@ if (isset($_POST['register'])) {
         $sql = "INSERT INTO users (username, password, fullname) VALUES ('$username', '$password', '$fullname')";
 
         if (mysqli_query($conn, $sql)) {
-            echo "<script>alert('สมัครสมาชิกสำเร็จ!'); window.location='login.php';</script>";
+            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'สมัครสมาชิกสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'login.php'; }); }, 100);</script>";
         }
         else {
             echo "<div class='alert alert-danger text-center mt-3 shadow-sm'>เกิดข้อผิดพลาดในการสมัครสมาชิก: " . mysqli_error($conn) . "</div>";

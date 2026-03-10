@@ -5,13 +5,13 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // เช็คสิทธิ์ Admin
 if (!isset($_SESSION['admin_username'])) {
-    echo "<script>alert('เฉพาะผู้ดูแลระบบเท่านั้น!'); window.location='login_admin.php';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'เฉพาะผู้ดูแลระบบเท่านั้น!', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'login_admin.php'; }); }, 100);</script>";
     exit();
 }
 
 $current_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : 'superadmin';
 if ($current_role !== 'superadmin' && $current_role !== 'admin_tradition') {
-    echo "<script>alert('สิทธิ์การเข้าถึงถูกปฏิเสธ! คุณไม่มีสิทธิ์จัดการส่วนนี้'); window.location='admin_dashboard.php';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'สิทธิ์การเข้าถึงถูกปฏิเสธ! คุณไม่มีสิทธิ์จัดการส่วนนี้', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php'; }); }, 100);</script>";
     exit();
 }
 
@@ -22,7 +22,7 @@ if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $sql_delete = "DELETE FROM traditions WHERE id = $id";
     if (mysqli_query($conn, $sql_delete)) {
-        echo "<script>alert('ลบข้อมูลประเพณีสำเร็จ!'); window.location='admin_tradition.php';</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ลบข้อมูลประเพณีสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_tradition.php'; }); }, 100);</script>";
     }
 }
 
@@ -43,7 +43,7 @@ if (isset($_POST['add_tradition'])) {
 
     $sql_insert = "INSERT INTO traditions (name, description, image_url) VALUES ('$name', '$desc', '$img')";
     if (mysqli_query($conn, $sql_insert)) {
-        echo "<script>alert('เพิ่มข้อมูลประเพณีสำเร็จ!'); window.location='admin_tradition.php';</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'เพิ่มข้อมูลประเพณีสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_tradition.php'; }); }, 100);</script>";
     }
 }
 
@@ -66,7 +66,7 @@ if (isset($_POST['update_tradition'])) {
 
     $sql_update = "UPDATE traditions SET name='$name', description='$desc', image_url='$img' WHERE id=$id";
     if (mysqli_query($conn, $sql_update)) {
-        echo "<script>alert('อัปเดตข้อมูลประเพณีสำเร็จ!'); window.location='admin_tradition.php';</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'อัปเดตข้อมูลประเพณีสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_tradition.php'; }); }, 100);</script>";
     }
 }
 
@@ -163,7 +163,7 @@ include('includes/header.php');
                                         echo "<td class='text-start small text-muted text-truncate' style='max-width: 250px;'>".htmlspecialchars($row['description'])."</td>";
                                         echo "<td>
                                                 <a href='admin_tradition.php?edit={$row['id']}' class='btn btn-sm btn-info text-white mb-1 px-3 rounded-pill shadow-sm'><i class='fas fa-edit'></i> แก้ไข</a>
-                                                <a href='admin_tradition.php?delete={$row['id']}' class='btn btn-sm btn-danger mb-1 px-3 rounded-pill shadow-sm' onclick=\"return confirm('ระวัง! คุณแน่ใจหรือไม่ที่จะลบประเพณีนี้?');\"><i class='fas fa-trash'></i> ลบ</a>
+                                                <a href='admin_tradition.php?delete={$row['id']}' class='btn btn-sm btn-danger mb-1 px-3 rounded-pill shadow-sm' onclick=\"event.preventDefault(); Swal.fire({title: 'ระวัง! คุณแน่ใจหรือไม่ที่จะลบประเพณีนี้?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'ตกลง', cancelButtonText: 'ยกเลิก'}).then((result) => { if (result.isConfirmed) { window.location.href = this.href; } })\"><i class='fas fa-trash'></i> ลบ</a>
                                               </td>";
                                         echo "</tr>";
                                     }

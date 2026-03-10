@@ -17,7 +17,7 @@ if (isset($_POST['login'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['fullname'] = $user['fullname'];
-        echo "<script>alert('ยินดีต้อนรับ!'); window.location='index.php';</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ยินดีต้อนรับ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'index.php'; }); }, 100);</script>";
     }
     else {
         echo "<div class='alert alert-danger text-center mt-3'>ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</div>";

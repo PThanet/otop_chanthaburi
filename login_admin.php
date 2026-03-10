@@ -21,7 +21,7 @@ if (isset($_POST['login_admin'])) {
         // ตรวจสอบและดึงข้อมูล role, ปกติ admin จะได้ superadmin
         $_SESSION['admin_role'] = isset($user['role']) ? $user['role'] : 'superadmin';
 
-        echo "<script>alert('ยินดีต้อนรับผู้ดูแลระบบ!'); window.location='admin_dashboard.php';</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ยินดีต้อนรับผู้ดูแลระบบ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php'; }); }, 100);</script>";
     }
     else {
         echo "<div class='alert alert-danger text-center mt-3 shadow-sm'>ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง หรือคุณไม่มีสิทธิ์เข้าถึง</div>";

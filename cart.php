@@ -393,23 +393,42 @@ function updateQuantity(productId, change) {
 }
 
 function removeItem(productId) {
-    if (confirm('คุณต้องการลบสินค้านี้ออกจากตะกร้าใช่หรือไม่?')) {
-        fetch('remove_from_cart.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                product_id: productId
+    Swal.fire({
+        title: 'ยืนยันการลบสินค้า?',
+        text: "คุณต้องการลบสินค้านี้ออกจากตะกร้าใช่หรือไม่?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'ใช่, ฉันต้องการลบ',
+        cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('remove_from_cart.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    product_id: productId
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            }
-        });
-    }
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'ลบสำเร็จ!',
+                        text: 'สินค้าถูกลบออกจากตะกร้าแล้ว',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+            });
+        }
+    });
 }
 </script>
 

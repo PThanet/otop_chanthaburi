@@ -266,6 +266,31 @@ if (!$order) {
         color: #856404;
     }
 
+    .status-confirmed {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .status-processing {
+        background: #e2e3e5;
+        color: #41464b;
+    }
+
+    .status-shipped {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .status-delivered {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
     .action-buttons {
         display: flex;
         gap: 10px;
@@ -368,8 +393,27 @@ if (!$order) {
                 <div class="detail-row">
                     <span class="detail-label">สถานะ:</span>
                     <span class="detail-value">
-                        <span class="status-badge status-pending">
-                            <i class="fas fa-hourglass-half me-1"></i>รอการยืนยัน
+                        <?php 
+                        $status_text = [
+                            'pending' => 'รอการยืนยัน',
+                            'confirmed' => 'ยืนยันแล้ว',
+                            'processing' => 'กำลังเตรียม',
+                            'shipped' => 'ส่งแล้ว',
+                            'delivered' => 'ส่งถึงแล้ว',
+                            'cancelled' => 'ยกเลิก'
+                        ];
+                        $status_icons = [
+                            'pending' => 'fa-hourglass-half',
+                            'confirmed' => 'fa-check-circle',
+                            'processing' => 'fa-box',
+                            'shipped' => 'fa-truck',
+                            'delivered' => 'fa-home',
+                            'cancelled' => 'fa-times-circle'
+                        ];
+                        $current_status = $order['status'] ?? 'pending';
+                        ?>
+                        <span class="status-badge status-<?= htmlspecialchars($current_status) ?>">
+                            <i class="fas <?= $status_icons[$current_status] ?? 'fa-info-circle' ?> me-1"></i><?= $status_text[$current_status] ?? htmlspecialchars($current_status) ?>
                         </span>
                     </span>
                 </div>
@@ -461,12 +505,18 @@ if (!$order) {
             </div>
 
             <div class="action-buttons">
-                <a href="product.php" class="btn-secondary-action">
-                    <i class="fas fa-shopping-basket me-2"></i>ซื้อสินค้าต่อ
-                </a>
-                <a href="view_orders.php" class="btn-primary-action">
-                    <i class="fas fa-list me-2"></i>ดูออเดอร์ของฉัน
-                </a>
+                <?php if (isset($_SESSION['admin_username'])): ?>
+                    <a href="admin_orders.php" class="btn-secondary-action" style="flex: unset; width: 100%;">
+                        <i class="fas fa-arrow-left me-2"></i>ย้อนกลับไปหน้าจัดการออเดอร์
+                    </a>
+                <?php else: ?>
+                    <a href="product.php" class="btn-secondary-action">
+                        <i class="fas fa-shopping-basket me-2"></i>ซื้อสินค้าต่อ
+                    </a>
+                    <a href="view_orders.php" class="btn-primary-action">
+                        <i class="fas fa-list me-2"></i>ดูออเดอร์ของฉัน
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -527,8 +577,15 @@ function copyToClipboard(text) {
     temp.select();
     document.execCommand('copy');
     document.body.removeChild(temp);
-    
-    alert('คัดลอกเลขบัญชีสำเร็จ!');
+    Swal.fire({
+        title: 'คัดลอกเลขบัญชีสำเร็จ!',
+        icon: 'success',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+    });
 }
 </script>
 

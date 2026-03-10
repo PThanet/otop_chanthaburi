@@ -5,13 +5,13 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // เช็คสิทธิ์ Admin
 if (!isset($_SESSION['admin_username'])) {
-    echo "<script>alert('เฉพาะผู้ดูแลระบบเท่านั้น!'); window.location='login_admin.php';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'เฉพาะผู้ดูแลระบบเท่านั้น!', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'login_admin.php'; }); }, 100);</script>";
     exit();
 }
 
 $current_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : 'superadmin';
 if ($current_role !== 'superadmin' && $current_role !== 'admin_travel') {
-    echo "<script>alert('สิทธิ์การเข้าถึงถูกปฏิเสธ! คุณไม่มีสิทธิ์จัดการส่วนนี้'); window.location='admin_dashboard.php';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'สิทธิ์การเข้าถึงถูกปฏิเสธ! คุณไม่มีสิทธิ์จัดการส่วนนี้', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php'; }); }, 100);</script>";
     exit();
 }
 
@@ -22,7 +22,7 @@ if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $sql_delete = "DELETE FROM travel_places WHERE id = $id";
     if (mysqli_query($conn, $sql_delete)) {
-        echo "<script>alert('ลบข้อมูลสำเร็จ!'); window.location='admin_travel.php';</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ลบข้อมูลสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_travel.php'; }); }, 100);</script>";
     }
 }
 
@@ -44,7 +44,7 @@ if (isset($_POST['add_place'])) {
 
     $sql_insert = "INSERT INTO travel_places (name, description, image_url, tag) VALUES ('$name', '$desc', '$img', '$tag')";
     if (mysqli_query($conn, $sql_insert)) {
-        echo "<script>alert('เพิ่มข้อมูลสำเร็จ!'); window.location='admin_travel.php';</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'เพิ่มข้อมูลสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_travel.php'; }); }, 100);</script>";
     }
 }
 
@@ -68,7 +68,7 @@ if (isset($_POST['update_place'])) {
 
     $sql_update = "UPDATE travel_places SET name='$name', description='$desc', image_url='$img', tag='$tag' WHERE id=$id";
     if (mysqli_query($conn, $sql_update)) {
-        echo "<script>alert('อัปเดตข้อมูลสำเร็จ!'); window.location='admin_travel.php';</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'อัปเดตข้อมูลสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_travel.php'; }); }, 100);</script>";
     }
 }
 
@@ -170,7 +170,7 @@ include('includes/header.php');
                                         echo "<td><span class='badge bg-secondary'>".htmlspecialchars($row['tag'])."</span></td>";
                                         echo "<td>
                                                 <a href='admin_travel.php?edit={$row['id']}' class='btn btn-sm btn-warning mb-1'><i class='fas fa-edit'></i></a>
-                                                <a href='admin_travel.php?delete={$row['id']}' class='btn btn-sm btn-danger mb-1' onclick=\"return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบสถานที่นี้?');\"><i class='fas fa-trash'></i></a>
+                                                <a href='admin_travel.php?delete={$row['id']}' class='btn btn-sm btn-danger mb-1' onclick=\"event.preventDefault(); Swal.fire({title: 'คุณแน่ใจหรือไม่ว่าต้องการลบสถานที่นี้?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'ตกลง', cancelButtonText: 'ยกเลิก'}).then((result) => { if (result.isConfirmed) { window.location.href = this.href; } })\"><i class='fas fa-trash'></i></a>
                                               </td>";
                                         echo "</tr>";
                                     }

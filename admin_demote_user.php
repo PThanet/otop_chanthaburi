@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // เช็คสิทธิ์ Admin: เฉพาะ superadmin เท่านั้นที่เข้ามาหน้านี้ได้
 if (!isset($_SESSION['admin_username']) || !isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'superadmin') {
-    echo "<script>alert('สิทธิ์การเข้าถึงถูกปฏิเสธ! เฉพาะผู้ดูแลระบบสูงสุด (Super Admin) เท่านั้น'); window.location='admin_dashboard.php';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'สิทธิ์การเข้าถึงถูกปฏิเสธ! เฉพาะผู้ดูแลระบบสูงสุด (Super Admin) เท่านั้น', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php'; }); }, 100);</script>";
     exit();
 }
 
@@ -14,7 +14,7 @@ include('includes/db_config.php');
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id <= 0) {
-    echo "<script>alert('ข้อมูลไม่ถูกต้อง'); window.location='admin_dashboard.php#admins-table';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ข้อมูลไม่ถูกต้อง', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#admins-table'; }); }, 100);</script>";
     exit();
 }
 
@@ -27,13 +27,13 @@ $result = mysqli_stmt_get_result($stmt_check);
 $target_admin = mysqli_fetch_assoc($result);
 
 if (!$target_admin) {
-    echo "<script>alert('ไม่พบข้อมูลแอดมิน'); window.location='admin_dashboard.php#admins-table';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ไม่พบข้อมูลแอดมิน', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#admins-table'; }); }, 100);</script>";
     exit();
 }
 
 // ห้ามลบ/ลดขั้น superadmin (รวมถึงตัวเอง)
 if ($target_admin['role'] === 'superadmin') {
-    echo "<script>alert('ไม่สามารถลดขั้นผู้ดูแลระบบสูงสุด (Super Admin) ได้'); window.location='admin_dashboard.php#admins-table';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ไม่สามารถลดขั้นผู้ดูแลระบบสูงสุด (Super Admin) ได้', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#admins-table'; }); }, 100);</script>";
     exit();
 }
 
@@ -56,10 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_demote'])) {
         mysqli_stmt_bind_param($delete_stmt, "i", $id);
         mysqli_stmt_execute($delete_stmt);
 
-        echo "<script>alert('ลดขั้นกลับไปเป็นผู้ใช้งานทั่วไปสำเร็จ'); window.location='admin_dashboard.php#users-table';</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ลดขั้นกลับไปเป็นผู้ใช้งานทั่วไปสำเร็จ', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#users-table'; }); }, 100);</script>";
         exit();
     } else {
-        echo "<script>alert('เกิดข้อผิดพลาดในการย้ายข้อมูลกลับไปเป็น user');</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'เกิดข้อผิดพลาดในการย้ายข้อมูลกลับไปเป็น user', icon: 'error', confirmButtonText: 'ตกลง'}); }, 100);</script>";
     }
 }
 ?>

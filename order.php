@@ -175,12 +175,12 @@ include 'includes/header.php';
             const quantity = parseInt(document.getElementById('quantity').value);
             
             if (productId === 0) {
-                alert('ไม่พบสินค้า');
+                Swal.fire({icon: 'error', title: 'ไม่พบสินค้า', text: 'กรุณาลองใหม่อีกครั้ง!'});
                 return;
             }
 
             if (quantity < 1) {
-                alert('โปรดเลือกจำนวนที่มากกว่า 0');
+                Swal.fire({icon: 'warning', title: 'โปรดระบุจำนวน', text: 'โปรดเลือกจำนวนที่มากกว่า 0'});
                 return;
             }
 
@@ -199,7 +199,16 @@ include 'includes/header.php';
             .then(data => {
                 if (data.success) {
                     // แสดงข้อความสำเร็จ
-                    alert('✓ เพิ่มสินค้าเข้าตะกร้าแล้ว (' + data.cart_count + ' ชิ้น)');
+                    Swal.fire({
+                        title: 'เข้าตะกร้าแล้ว!',
+                        text: 'เพิ่มสินค้าสำเร็จ (' + data.cart_count + ' ชิ้น)',
+                        icon: 'success',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
                     
                     // รีเซตจำนวน
                     document.getElementById('quantity').value = 1;
@@ -207,12 +216,12 @@ include 'includes/header.php';
                     // อัปเดตจำนวนในตะกร้าที่ header
                     updateCartBadge();
                 } else {
-                    alert('❌ ' + (data.message || 'เพิ่มสินค้าล้มเหลว'));
+                    Swal.fire({icon: 'error', title: 'เพิ่มสินค้าล้มเหลว', text: data.message || 'เกิดข้อผิดพลาด'});
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('❌ เกิดข้อผิดพลาด');
+                Swal.fire({icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้'});
             });
         }
 

@@ -64,7 +64,7 @@ $cart = getCart();
 $total_amount = getCartTotal();
 
 // บันทึกออเดอร์ (ใช้ Prepared Statements)
-$user_id = isset($_SESSION['id']) ? intval($_SESSION['id']) : NULL;
+$user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : NULL;
 $shipping_cost = 0;
 $status = 'pending';
 

@@ -1,6 +1,14 @@
 <?php
-include 'includes/header.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+include 'includes/header.php';
 // ตรวจสอบตะกร้าไม่ว่างเปล่า
 if (empty(getCart())) {
     header('Location: product.php');

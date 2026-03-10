@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // ตรวจสอบสิทธิ์การเข้าถึง: ถ้าไม่มี Session ของ admin_username ให้เด้งกลับไปหน้าล็อกอินแอดมิน
 if (!isset($_SESSION['admin_username'])) {
-    echo "<script>alert('สิทธิ์การเข้าถึงถูกปฏิเสธ! เฉพาะผู้ดูแลระบบเท่านั้น'); window.location='login_admin.php';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'สิทธิ์การเข้าถึงถูกปฏิเสธ! เฉพาะผู้ดูแลระบบเท่านั้น', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'login_admin.php'; }); }, 100);</script>";
     exit();
 }
 

@@ -406,26 +406,48 @@ $order_statuses = [
 
 <script>
 function updateOrderStatus(orderId, newStatus) {
-    if (confirm('คุณแน่ใจหรือไม่ว่าต้องการอัปเดตสถานะออเดอร์?')) {
-        fetch('update_order_status.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                order_id: orderId,
-                status: newStatus
+    Swal.fire({
+        title: 'คุณแน่ใจหรือไม่ว่าต้องการอัปเดตสถานะออเดอร์?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ตกลง',
+        cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('update_order_status.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    status: newStatus
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('เกิดข้อผิดพลาด: ' + data.message);
-            }
-        });
-    }
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'อัปเดตสถานะสำเร็จ!',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'เกิดข้อผิดพลาด',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonText: 'ตกลง'
+                    });
+                }
+            });
+        }
+    });
 }
 </script>
 

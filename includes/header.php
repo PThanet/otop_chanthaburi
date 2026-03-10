@@ -1,4 +1,4 @@
-<?php 
+<?php
 if (session_status() === PHP_SESSION_NONE)
     session_start();
 
@@ -6,6 +6,7 @@ include_once __DIR__ . '/cart_functions.php';
 ?>
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -113,26 +114,32 @@ include_once __DIR__ . '/cart_functions.php';
             transition: 0.3s;
         }
 
-        .btn-gold:hover {
-            background: #ffca28;
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+        /* Separator and Cart styling */
+        .order-history-nav-item {
+            display: flex;
+            align-items: center;
         }
 
-        /* Cart styling */
-        .nav-link[href="cart.php"] {
-            margin-left: 25px !important;
-            font-size: 1.1rem;
-        }
-
-        .nav-link[href="cart.php"]::before {
+        .order-history-nav-item::before {
             content: '';
             display: inline-block;
             width: 3px;
             height: 20px;
             background: rgba(255, 255, 255, 0.2);
-            margin-right: 20px;
+            margin-right: 15px;
+            margin-left: 15px;
             border-radius: 2px;
+        }
+
+        .cart-nav-item {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+
+        .nav-link[href="cart.php"] {
+            font-size: 1.1rem;
+            margin: 0 !important;
         }
     </style>
 </head>
@@ -144,35 +151,43 @@ include_once __DIR__ . '/cart_functions.php';
             <a class="navbar-brand fw-bold" href="index.php">
                 <i class="fas fa-gem text-warning me-2"></i>CHANTHABURI
             </a>
-            <div class="collapse navbar-collapse" id="navbarNav"> 
-                <ul class="navbar-nav ms-auto align-items-center"> 
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="product.php">สินค้า OTOP</a></li>
                     <li class="nav-item"><a class="nav-link" href="tradition.php">ประเพณี</a></li>
                     <li class="nav-item"><a class="nav-link" href="travel.php">สถานที่ท่องเที่ยว</a></li>
                     <li class="nav-item"><a class="nav-link" href="team.php">ผู้จัดทำ</a></li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="view_orders.php">
-                            <i class="fas fa-history me-1"></i>ประวัติการสั่ง
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item ms-lg-2">
+
+                </ul>
+                <ul class="navbar-nav align-items-center">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <li class="nav-item order-history-nav-item">
+                            <a class="nav-link pe-0" href="view_orders.php"
+                                style="font-size: 1.1rem; padding-right: 0 !important; margin-right: 5px !important;">
+                                <i class="fas fa-history me-1"></i>ประวัติการสั่งซื้อ
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    <li class="nav-item ms-lg-2 cart-nav-item">
                         <a class="nav-link position-relative" href="cart.php" style="font-size: 1.2rem;">
                             <i class="fas fa-shopping-cart"></i>
                             <?php $cart_count = getCartCount(); ?>
                             <?php if ($cart_count > 0): ?>
-                                <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.75rem;">
+                                <span id="cart-badge"
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                    style="font-size: 0.75rem;">
                                     <?= $cart_count ?>
                                 </span>
                             <?php else: ?>
-                                <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.75rem; display: none;">
+                                <span id="cart-badge"
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                    style="font-size: 0.75rem; display: none;">
                                     0
                                 </span>
                             <?php endif; ?>
                         </a>
                     </li>
-                    
+
                     <?php if (isset($_SESSION['admin_username'])): ?>
                         <li class="nav-item">
                             <a class="nav-link text-warning fw-bold" href="admin_dashboard.php">
@@ -180,14 +195,16 @@ include_once __DIR__ . '/cart_functions.php';
                             </a>
                         </li>
                         <li class="nav-item dropdown ms-lg-3">
-                            <a class="btn btn-danger rounded-pill px-4 text-white shadow-sm" href="logout.php" onclick="return confirm('คุณต้องการออกจากระบบใช่หรือไม่?');">
+                            <a class="btn btn-danger rounded-pill px-4 text-white shadow-sm" href="logout.php"
+                                onclick="event.preventDefault(); Swal.fire({title: 'คุณต้องการออกจากระบบใช่หรือไม่?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'ตกลง', cancelButtonText: 'ยกเลิก'}).then((result) => { if (result.isConfirmed) { window.location.href = this.href; } })">
                                 <?= $_SESSION['admin_fullname'] ?> (Admin) <i class="fas fa-sign-out-alt ms-1"></i>
                             </a>
                         </li>
 
                     <?php elseif (isset($_SESSION['username'])): ?>
                         <li class="nav-item dropdown ms-lg-3">
-                            <a class="btn btn-outline-warning rounded-pill px-4 text-white" href="logout.php" onclick="return confirm('คุณต้องการออกจากระบบใช่หรือไม่?');">
+                            <a class="btn btn-outline-warning rounded-pill px-4 text-white" href="logout.php"
+                                onclick="event.preventDefault(); Swal.fire({title: 'คุณต้องการออกจากระบบใช่หรือไม่?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'ตกลง', cancelButtonText: 'ยกเลิก'}).then((result) => { if (result.isConfirmed) { window.location.href = this.href; } })">
                                 <?= $_SESSION['fullname'] ?> <i class="fas fa-sign-out-alt ms-1"></i>
                             </a>
                         </li>
@@ -202,10 +219,10 @@ include_once __DIR__ . '/cart_functions.php';
 
     <script>
         // Highlight active menu based on current page
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const currentPage = window.location.pathname.split('/').pop() || 'index.php';
             const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-            
+
             navLinks.forEach(link => {
                 const href = link.getAttribute('href');
                 if (href === currentPage || href === '') {

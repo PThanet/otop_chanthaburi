@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // เช็คสิทธิ์ Admin
 if (!isset($_SESSION['admin_username'])) {
-    echo "<script>alert('สิทธิ์การเข้าถึงถูกปฏิเสธ! เฉพาะผู้ดูแลระบบเท่านั้น'); window.location='login_admin.php';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'สิทธิ์การเข้าถึงถูกปฏิเสธ! เฉพาะผู้ดูแลระบบเท่านั้น', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'login_admin.php'; }); }, 100);</script>";
     exit();
 }
 
@@ -14,7 +14,7 @@ include('includes/db_config.php');
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id <= 0) {
-    echo "<script>alert('ข้อมูลไม่ถูกต้อง'); window.location='admin_dashboard.php#users-table';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ข้อมูลไม่ถูกต้อง', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#users-table'; }); }, 100);</script>";
     exit();
 }
 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_promote'])) {
         mysqli_stmt_store_result($check_stmt);
 
         if (mysqli_stmt_num_rows($check_stmt) > 0) {
-            echo "<script>alert('ผู้ใช้นี้มีชื่ออยู่ในระบบแอดมินแล้ว หรือ Username ซ้ำ'); window.location='admin_dashboard.php#users-table';</script>";
+            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ผู้ใช้นี้มีชื่ออยู่ในระบบแอดมินแล้ว หรือ Username ซ้ำ', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#users-table'; }); }, 100);</script>";
         } else {
             // รับค่า Role จาก Form (default: superadmin)
             $role = isset($_POST['admin_role']) ? $_POST['admin_role'] : 'superadmin';
@@ -57,14 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_promote'])) {
                 mysqli_stmt_bind_param($delete_stmt, "i", $id);
                 mysqli_stmt_execute($delete_stmt);
 
-                echo "<script>alert('แต่งตั้งเป็นผู้ดูแลระบบเรียบร้อยแล้ว'); window.location='admin_dashboard.php#users-table';</script>";
+                echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'แต่งตั้งเป็นผู้ดูแลระบบเรียบร้อยแล้ว', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#users-table'; }); }, 100);</script>";
                 exit();
             } else {
-                echo "<script>alert('เกิดข้อผิดพลาดในการแต่งตั้ง');</script>";
+                echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'เกิดข้อผิดพลาดในการแต่งตั้ง', icon: 'error', confirmButtonText: 'ตกลง'}); }, 100);</script>";
             }
         }
     } else {
-        echo "<script>alert('ไม่พบข้อมูลผู้ใช้งาน'); window.location='admin_dashboard.php#users-table';</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ไม่พบข้อมูลผู้ใช้งาน', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#users-table'; }); }, 100);</script>";
         exit();
     }
 }
@@ -78,7 +78,7 @@ $result = mysqli_stmt_get_result($stmt);
 $user = mysqli_fetch_assoc($result);
 
 if (!$user) {
-    echo "<script>alert('ไม่พบข้อมูลผู้ใช้งาน'); window.location='admin_dashboard.php#users-table';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ไม่พบข้อมูลผู้ใช้งาน', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#users-table'; }); }, 100);</script>";
     exit();
 }
 ?>

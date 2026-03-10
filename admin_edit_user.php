@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // ตรวจสอบสิทธิ์การเข้าถึง: ถ้าไม่มี Session ของ admin_username ให้เด้งกลับไปหน้าล็อกอินแอดมิน
 if (!isset($_SESSION['admin_username'])) {
-    echo "<script>alert('สิทธิ์การเข้าถึงถูกปฏิเสธ! เฉพาะผู้ดูแลระบบเท่านั้น'); window.location='login_admin.php';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'สิทธิ์การเข้าถึงถูกปฏิเสธ! เฉพาะผู้ดูแลระบบเท่านั้น', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'login_admin.php'; }); }, 100);</script>";
     exit();
 }
 
@@ -15,7 +15,7 @@ include('includes/db_config.php');
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id <= 0) {
-    echo "<script>alert('ข้อมูลไม่ถูกต้อง'); window.location='admin_dashboard.php#users-table';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ข้อมูลไม่ถูกต้อง', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#users-table'; }); }, 100);</script>";
     exit();
 }
 
@@ -32,17 +32,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     mysqli_stmt_store_result($stmt_check);
 
     if (mysqli_stmt_num_rows($stmt_check) > 0) {
-        echo "<script>alert('Username นี้มีการใช้งานในระบบแล้ว กรุณาใช้ชื่ออื่น');</script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'Username นี้มีการใช้งานในระบบแล้ว กรุณาใช้ชื่ออื่น', icon: 'error', confirmButtonText: 'ตกลง'}); }, 100);</script>";
     } else {
         $update_sql = "UPDATE users SET username=?, fullname=? WHERE id=?";
         $stmt_update = mysqli_prepare($conn, $update_sql);
         mysqli_stmt_bind_param($stmt_update, "ssi", $username, $fullname, $id);
 
         if (mysqli_stmt_execute($stmt_update)) {
-            echo "<script>alert('อัปเดตข้อมูลผู้ใช้งานเรียบร้อยแล้ว!'); window.location='admin_dashboard.php#users-table';</script>";
+            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'อัปเดตข้อมูลผู้ใช้งานเรียบร้อยแล้ว!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#users-table'; }); }, 100);</script>";
             exit();
         } else {
-            echo "<script>alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');</script>";
+            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'เกิดข้อผิดพลาดในการอัปเดตข้อมูล', icon: 'error', confirmButtonText: 'ตกลง'}); }, 100);</script>";
         }
     }
 }
@@ -56,7 +56,7 @@ $result = mysqli_stmt_get_result($stmt);
 $user = mysqli_fetch_assoc($result);
 
 if (!$user) {
-    echo "<script>alert('ไม่พบข้อมูลผู้ใช้งาน'); window.location='admin_dashboard.php#users-table';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'ไม่พบข้อมูลผู้ใช้งาน', icon: 'error', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_dashboard.php#users-table'; }); }, 100);</script>";
     exit();
 }
 ?>
