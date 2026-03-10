@@ -38,6 +38,7 @@
         <div class="mx-auto bg-warning" style="height: 4px; width: 80px; border-radius: 2px;"></div>
     </div>
 
+    <div class="row g-4 justify-content-center">
         <?php
         include('includes/db_config.php');
         $sql = "SELECT * FROM traditions ORDER BY id ASC";
