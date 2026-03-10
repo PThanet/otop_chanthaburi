@@ -87,7 +87,7 @@
                             <h4 class="fw-bold mb-2" style="color: #004d40;"><?= htmlspecialchars($p['name']) ?></h4>
                             <p class="text-success fs-3 fw-bold mb-4">฿<?= htmlspecialchars($p['price']) ?></p>
                         </div>
-                        <a href="order.php?name=<?= urlencode($p['name']) ?>&price=<?= urlencode($p['price']) ?>&img=<?= urlencode($p['image_url']) ?>" class="btn btn-primary btn-order w-100 py-2">
+                        <a href="order.php?id=<?= $p['id'] ?>" class="btn btn-primary btn-order w-100 py-2">
                             <i class="fas fa-cart-plus me-2"></i> สั่งซื้อสินค้า
                         </a>
                     </div>

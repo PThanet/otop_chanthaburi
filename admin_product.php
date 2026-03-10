@@ -20,15 +20,35 @@ if (isset($_GET['delete'])) {
     }
 }
 
+// --- ฟังก์ชันช่วยเหลือสำหรับการอัปโหลดรูปภาพ ---
+function upload_image($file_input_name, $existing_image = '') {
+    $img = $existing_image;
+    if (isset($_FILES[$file_input_name]) && $_FILES[$file_input_name]['error'] == 0) {
+        $file_extension = pathinfo($_FILES[$file_input_name]["name"], PATHINFO_EXTENSION);
+        $new_filename = uniqid() . '_' . $file_input_name . '.' . $file_extension;
+        $target_file = "uploads/otop/" . $new_filename;
+        if (move_uploaded_file($_FILES[$file_input_name]["tmp_name"], $target_file)) {
+            $img = $target_file;
+        }
+    }
+    return $img;
+}
+
 // --- จัดการการเพิ่มข้อมูล (Add) ---
 if (isset($_POST['add_product'])) {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $price = mysqli_real_escape_string($conn, $_POST['price']);
-    $image_url = mysqli_real_escape_string($conn, $_POST['image_url']);
+    $desc = mysqli_real_escape_string($conn, $_POST['description']);
     $tag = mysqli_real_escape_string($conn, $_POST['tag']);
     $tag_color = mysqli_real_escape_string($conn, $_POST['tag_color']);
 
-    $sql_insert = "INSERT INTO otop_products (name, price, image_url, tag, tag_color) VALUES ('$name', '$price', '$image_url', '$tag', '$tag_color')";
+    $image_url = upload_image('image_file');
+    $image_url_2 = upload_image('image_file_2');
+    $image_url_3 = upload_image('image_file_3');
+    $image_url_4 = upload_image('image_file_4');
+
+    $sql_insert = "INSERT INTO otop_products (name, price, description, image_url, image_url_2, image_url_3, image_url_4, tag, tag_color) 
+                   VALUES ('$name', '$price', '$desc', '$image_url', '$image_url_2', '$image_url_3', '$image_url_4', '$tag', '$tag_color')";
     if (mysqli_query($conn, $sql_insert)) {
         echo "<script>alert('เพิ่มข้อมูลสินค้า OTOP สำเร็จ!'); window.location='admin_product.php';</script>";
     }
@@ -39,11 +59,32 @@ if (isset($_POST['update_product'])) {
     $id = intval($_POST['id']);
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $price = mysqli_real_escape_string($conn, $_POST['price']);
-    $image_url = mysqli_real_escape_string($conn, $_POST['image_url']);
+    $desc = mysqli_real_escape_string($conn, $_POST['description']);
     $tag = mysqli_real_escape_string($conn, $_POST['tag']);
     $tag_color = mysqli_real_escape_string($conn, $_POST['tag_color']);
+    
+    $existing_image = mysqli_real_escape_string($conn, $_POST['existing_image']);
+    $existing_image_2 = mysqli_real_escape_string($conn, $_POST['existing_image_2']);
+    $existing_image_3 = mysqli_real_escape_string($conn, $_POST['existing_image_3']);
+    $existing_image_4 = mysqli_real_escape_string($conn, $_POST['existing_image_4']);
 
-    $sql_update = "UPDATE otop_products SET name='$name', price='$price', image_url='$image_url', tag='$tag', tag_color='$tag_color' WHERE id=$id";
+    $image_url = upload_image('image_file', $existing_image);
+    $image_url_2 = upload_image('image_file_2', $existing_image_2);
+    $image_url_3 = upload_image('image_file_3', $existing_image_3);
+    $image_url_4 = upload_image('image_file_4', $existing_image_4);
+
+    $sql_update = "UPDATE otop_products SET 
+                   name='$name', 
+                   price='$price', 
+                   description='$desc',
+                   image_url='$image_url', 
+                   image_url_2='$image_url_2', 
+                   image_url_3='$image_url_3', 
+                   image_url_4='$image_url_4', 
+                   tag='$tag', 
+                   tag_color='$tag_color' 
+                   WHERE id=$id";
+                   
     if (mysqli_query($conn, $sql_update)) {
         echo "<script>alert('อัปเดตข้อมูลสินค้า OTOP สำเร็จ!'); window.location='admin_product.php';</script>";
     }
@@ -79,9 +120,13 @@ include('includes/header.php');
                     </h4>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="admin_product.php">
+                    <form method="POST" action="admin_product.php" enctype="multipart/form-data">
                         <?php if($edit_data): ?>
                             <input type="hidden" name="id" value="<?= $edit_data['id'] ?>">
+                            <input type="hidden" name="existing_image" value="<?= htmlspecialchars($edit_data['image_url'] ?? '') ?>">
+                            <input type="hidden" name="existing_image_2" value="<?= htmlspecialchars($edit_data['image_url_2'] ?? '') ?>">
+                            <input type="hidden" name="existing_image_3" value="<?= htmlspecialchars($edit_data['image_url_3'] ?? '') ?>">
+                            <input type="hidden" name="existing_image_4" value="<?= htmlspecialchars($edit_data['image_url_4'] ?? '') ?>">
                         <?php endif; ?>
 
                         <div class="mb-3">
@@ -93,8 +138,47 @@ include('includes/header.php');
                             <input type="number" name="price" class="form-control" value="<?= $edit_data ? htmlspecialchars($edit_data['price']) : '' ?>" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">URL รูปภาพ</label>
-                            <input type="text" name="image_url" class="form-control" placeholder="เช่น otop/CrispyPineapple.png" value="<?= $edit_data ? htmlspecialchars($edit_data['image_url']) : '' ?>" required>
+                            <label class="form-label fw-bold">คำอธิบายสินค้า</label>
+                            <textarea name="description" class="form-control" rows="4"><?= $edit_data ? htmlspecialchars($edit_data['description'] ?? '') : '' ?></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">รูปภาพหลัก (ปก)</label>
+                            <?php if($edit_data && !empty($edit_data['image_url'])): ?>
+                                <div class="mb-2"><img src="<?= htmlspecialchars($edit_data['image_url']) ?>" class="img-thumbnail" style="height:80px; object-fit:cover;"></div>
+                            <?php endif; ?>
+                            <input type="file" name="image_file" class="form-control form-control-sm" accept="image/*" <?= ($edit_data && !empty($edit_data['image_url'])) ? '' : 'required' ?>>
+                        </div>
+
+                        <div class="mb-3 p-3 bg-light rounded border">
+                            <label class="form-label fw-bold text-muted mb-3"><i class="fas fa-images me-2"></i>รูปภาพเพิ่มเติม (Thumbnail)</label>
+                            
+                            <!-- รูปที่ 2 -->
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">รูปภาพที่ 2</label>
+                                <?php if($edit_data && !empty($edit_data['image_url_2'])): ?>
+                                    <div class="mb-2"><img src="<?= htmlspecialchars($edit_data['image_url_2']) ?>" class="img-thumbnail" style="height:60px; object-fit:cover;"></div>
+                                <?php endif; ?>
+                                <input type="file" name="image_file_2" class="form-control form-control-sm" accept="image/*">
+                            </div>
+                            
+                            <!-- รูปที่ 3 -->
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">รูปภาพที่ 3</label>
+                                <?php if($edit_data && !empty($edit_data['image_url_3'])): ?>
+                                    <div class="mb-2"><img src="<?= htmlspecialchars($edit_data['image_url_3']) ?>" class="img-thumbnail" style="height:60px; object-fit:cover;"></div>
+                                <?php endif; ?>
+                                <input type="file" name="image_file_3" class="form-control form-control-sm" accept="image/*">
+                            </div>
+                            
+                            <!-- รูปที่ 4 -->
+                            <div class="mb-2">
+                                <label class="form-label small fw-bold">รูปภาพที่ 4</label>
+                                <?php if($edit_data && !empty($edit_data['image_url_4'])): ?>
+                                    <div class="mb-2"><img src="<?= htmlspecialchars($edit_data['image_url_4']) ?>" class="img-thumbnail" style="height:60px; object-fit:cover;"></div>
+                                <?php endif; ?>
+                                <input type="file" name="image_file_4" class="form-control form-control-sm" accept="image/*">
+                            </div>
                         </div>
                         <div class="row mb-4">
                             <div class="col-6">

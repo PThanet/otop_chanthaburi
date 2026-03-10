@@ -18,16 +18,22 @@
 
     .tradition-icon-wrapper {
         height: 200px;
-        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        background: #f8f9fa;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        overflow: hidden;
     }
 
-    .tradition-icon-wrapper i {
-        font-size: 5rem;
-        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    .tradition-icon-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .tradition-card:hover .tradition-icon-wrapper img {
+        transform: scale(1.1);
     }
 </style>
 
@@ -49,7 +55,14 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="tradition-card text-center">
                         <div class="tradition-icon-wrapper">
-                            <i class="fas <?= htmlspecialchars($item['icon']) ?>"></i>
+                            <?php 
+                                $img_src = !empty($item['image_url']) ? htmlspecialchars($item['image_url']) : 'otop/placeholder_tradition.png';
+                                // In case it still has old font-awesome classes, fallback to a placeholder
+                                if (strpos($img_src, 'fa-') !== false) {
+                                    $img_src = 'otop/placeholder_tradition.png';
+                                }
+                            ?>
+                            <img src="<?= $img_src ?>" alt="<?= htmlspecialchars($item['name']) ?>">
                         </div>
                         <div class="p-4">
                             <h4 class="fw-bold mb-3">

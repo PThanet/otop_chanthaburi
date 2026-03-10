@@ -1,9 +1,35 @@
 <?php
-include 'includes/header.php';
+include 'includes/db_config.php';
 
-$product_name = isset($_GET['name']) ? $_GET['name'] : 'Unknown Product';
-$product_price = isset($_GET['price']) ? $_GET['price'] : '0';
-$product_img = isset($_GET['img']) ? $_GET['img'] : 'otop/CrispyPineapple.jpg';
+$product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$product_name = 'Unknown Product';
+$product_price = '0';
+$product_img = 'otop/CrispyPineapple.jpg';
+$product_desc = 'ไม่มีคำอธิบายสินค้า';
+$images = [];
+
+if ($product_id > 0) {
+    $sql = "SELECT * FROM otop_products WHERE id = $product_id";
+    $result = mysqli_query($conn, $sql);
+    if ($row = mysqli_fetch_assoc($result)) {
+        $product_name = htmlspecialchars($row['name']);
+        $product_price = htmlspecialchars($row['price']);
+        
+        $product_img = !empty($row['image_url']) ? htmlspecialchars($row['image_url']) : $product_img;
+        
+        if (!empty($row['description'])) {
+            $product_desc = htmlspecialchars($row['description']);
+        }
+
+        // เก็บรูปลง array ไว้แสดงใน thumbnail
+        if (!empty($row['image_url'])) $images[] = htmlspecialchars($row['image_url']);
+        if (!empty($row['image_url_2'])) $images[] = htmlspecialchars($row['image_url_2']);
+        if (!empty($row['image_url_3'])) $images[] = htmlspecialchars($row['image_url_3']);
+        if (!empty($row['image_url_4'])) $images[] = htmlspecialchars($row['image_url_4']);
+    }
+}
+
+include 'includes/header.php';
 ?>
 
 <!DOCTYPE html>
@@ -150,17 +176,21 @@ $product_img = isset($_GET['img']) ? $_GET['img'] : 'otop/CrispyPineapple.jpg';
         <div class="order-container">
             <div class="image-gallery">
                 <img id="main-product-image" src="<?= $product_img ?>" alt="Product Image" class="product-image">
+                <?php if(count($images) > 1): ?>
                 <div class="thumbnails">
-                    <img src="otop/CrispyPineapple2.png" alt="Thumbnail 1" onclick="changeMainImage('otop/CrispyPineapple2.png', this)" class="active">
-                    <img src="otop/CrispyPineapple3.png" alt="Thumbnail 2" onclick="changeMainImage('otop/CrispyPineapple3.png', this)">
-                    <img src="otop/CrispyPineapple4.png" alt="Thumbnail 3" onclick="changeMainImage('otop/CrispyPineapple4.png', this)">
-                    
+                    <?php foreach($images as $index => $img): ?>
+                        <img src="<?= $img ?>" alt="Thumbnail <?= $index+1 ?>" onclick="changeMainImage('<?= $img ?>', this)" class="<?= $index === 0 ? 'active' : '' ?>">
+                    <?php endforeach; ?>
                 </div>
+                <?php endif; ?>
             </div>
             <div class="product-info">
                 <h2><?= $product_name ?></h2>
-                <p>ราคา: ฿<?= $product_price ?></p>
-                <p>คำอธิบาย: สัมผัสความอร่อยจากธรรมชาติแท้ๆ กับ "สับปะรดกรอบ" สินค้า OTOP คุณภาพระดับ 5 ดาว ที่คัดสรรสับปะรดสายพันธุ์ดีที่สุดจากไร่ นำมาผ่านกรรมวิธีที่ได้มาตรฐาน เพื่อรักษารสชาติหวานอมเปรี้ยวอันเป็นเอกลักษณ์ และคุณค่าทางโภชนาการไว้อย่างครบถ้วน</p>
+                <p class="fs-4 fw-bold text-success">ราคา: ฿<?= $product_price ?></p>
+                <div class="mb-4">
+                    <strong>คำอธิบาย:</strong>
+                    <p class="text-muted mt-2" style="font-size: 1rem; line-height: 1.6; white-space: pre-line;"><?= $product_desc ?></p>
+                </div>
                 <div class="quantity-control">
                     <button onclick="decreaseQuantity()">-</button>
                     <input type="number" id="quantity" value="1" min="1">

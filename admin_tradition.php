@@ -24,9 +24,18 @@ if (isset($_GET['delete'])) {
 if (isset($_POST['add_tradition'])) {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $desc = mysqli_real_escape_string($conn, $_POST['description']);
-    $icon = mysqli_real_escape_string($conn, $_POST['icon']);
+    
+    $img = '';
+    if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] == 0) {
+        $file_extension = pathinfo($_FILES["image_file"]["name"], PATHINFO_EXTENSION);
+        $new_filename = uniqid() . '.' . $file_extension;
+        $target_file = "uploads/traditions/" . $new_filename;
+        if (move_uploaded_file($_FILES["image_file"]["tmp_name"], $target_file)) {
+            $img = $target_file;
+        }
+    }
 
-    $sql_insert = "INSERT INTO traditions (name, description, icon) VALUES ('$name', '$desc', '$icon')";
+    $sql_insert = "INSERT INTO traditions (name, description, image_url) VALUES ('$name', '$desc', '$img')";
     if (mysqli_query($conn, $sql_insert)) {
         echo "<script>alert('เพิ่มข้อมูลประเพณีสำเร็จ!'); window.location='admin_tradition.php';</script>";
     }
@@ -37,9 +46,19 @@ if (isset($_POST['update_tradition'])) {
     $id = intval($_POST['id']);
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $desc = mysqli_real_escape_string($conn, $_POST['description']);
-    $icon = mysqli_real_escape_string($conn, $_POST['icon']);
+    $existing_image = mysqli_real_escape_string($conn, $_POST['existing_image']);
 
-    $sql_update = "UPDATE traditions SET name='$name', description='$desc', icon='$icon' WHERE id=$id";
+    $img = $existing_image;
+    if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] == 0) {
+        $file_extension = pathinfo($_FILES["image_file"]["name"], PATHINFO_EXTENSION);
+        $new_filename = uniqid() . '.' . $file_extension;
+        $target_file = "uploads/traditions/" . $new_filename;
+        if (move_uploaded_file($_FILES["image_file"]["tmp_name"], $target_file)) {
+            $img = $target_file;
+        }
+    }
+
+    $sql_update = "UPDATE traditions SET name='$name', description='$desc', image_url='$img' WHERE id=$id";
     if (mysqli_query($conn, $sql_update)) {
         echo "<script>alert('อัปเดตข้อมูลประเพณีสำเร็จ!'); window.location='admin_tradition.php';</script>";
     }
@@ -75,9 +94,10 @@ include('includes/header.php');
                     </h4>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="admin_tradition.php">
+                    <form method="POST" action="admin_tradition.php" enctype="multipart/form-data">
                         <?php if($edit_data): ?>
                             <input type="hidden" name="id" value="<?= $edit_data['id'] ?>">
+                            <input type="hidden" name="existing_image" value="<?= htmlspecialchars($edit_data['image_url'] ?? '') ?>">
                         <?php endif; ?>
 
                         <div class="mb-3">
@@ -89,9 +109,14 @@ include('includes/header.php');
                             <textarea name="description" class="form-control" rows="4" required><?= $edit_data ? htmlspecialchars($edit_data['description']) : '' ?></textarea>
                         </div>
                         <div class="mb-4">
-                            <label class="form-label fw-bold">คลาสไอคอน (Font Awesome)</label>
-                            <input type="text" name="icon" class="form-control" placeholder="เช่น fa-monument" value="<?= $edit_data ? htmlspecialchars($edit_data['icon']) : '' ?>" required>
-                            <small class="text-muted">ดูชื่อไอคอนได้ที่ <a href="https://fontawesome.com/icons?d=gallery&m=free" target="_blank">Font Awesome</a></small>
+                            <label class="form-label fw-bold">อัปโหลดรูปภาพประเพณี</label>
+                            <?php if($edit_data && isset($edit_data['image_url']) && $edit_data['image_url']): ?>
+                                <div class="mb-2 text-center">
+                                    <img src="<?= htmlspecialchars($edit_data['image_url']) ?>" alt="Current Image" class="img-thumbnail rounded shadow-sm" style="max-height:120px; object-fit:cover;">
+                                </div>
+                                <small class="text-muted d-block mb-2">เลือกไฟล์ใหม่หากต้องการเปลี่ยนรูป</small>
+                            <?php endif; ?>
+                            <input type="file" name="image_file" class="form-control" accept="image/*" <?= ($edit_data && isset($edit_data['image_url']) && $edit_data['image_url']) ? '' : 'required' ?>>
                         </div>
 
                         <?php if($edit_data): ?>
@@ -126,7 +151,8 @@ include('includes/header.php');
                                 if(mysqli_num_rows($result) > 0) {
                                     while($row = mysqli_fetch_assoc($result)) {
                                         echo "<tr>";
-                                        echo "<td><div style='width: 50px; height: 50px; border-radius: 50%; background: #ffc107; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto;'><i class='fas " . htmlspecialchars($row['icon']) . " fa-lg'></i></div></td>";
+                                        $img_src = !empty($row['image_url']) ? htmlspecialchars($row['image_url']) : 'otop/placeholder_tradition.png';
+                                        echo "<td><img src='" . $img_src . "' class='img-thumbnail rounded-circle shadow-sm' style='width: 60px; height: 60px; object-fit: cover;'></td>";
                                         echo "<td class='fw-bold'>".htmlspecialchars($row['name'])."</td>";
                                         echo "<td class='text-start small text-muted text-truncate' style='max-width: 250px;'>".htmlspecialchars($row['description'])."</td>";
                                         echo "<td>

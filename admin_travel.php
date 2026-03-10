@@ -24,8 +24,17 @@ if (isset($_GET['delete'])) {
 if (isset($_POST['add_place'])) {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $desc = mysqli_real_escape_string($conn, $_POST['description']);
-    $img = mysqli_real_escape_string($conn, $_POST['image_url']);
     $tag = mysqli_real_escape_string($conn, $_POST['tag']);
+    
+    $img = '';
+    if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] == 0) {
+        $file_extension = pathinfo($_FILES["image_file"]["name"], PATHINFO_EXTENSION);
+        $new_filename = uniqid() . '.' . $file_extension;
+        $target_file = "uploads/travel/" . $new_filename;
+        if (move_uploaded_file($_FILES["image_file"]["tmp_name"], $target_file)) {
+            $img = $target_file;
+        }
+    }
 
     $sql_insert = "INSERT INTO travel_places (name, description, image_url, tag) VALUES ('$name', '$desc', '$img', '$tag')";
     if (mysqli_query($conn, $sql_insert)) {
@@ -38,8 +47,18 @@ if (isset($_POST['update_place'])) {
     $id = intval($_POST['id']);
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $desc = mysqli_real_escape_string($conn, $_POST['description']);
-    $img = mysqli_real_escape_string($conn, $_POST['image_url']);
     $tag = mysqli_real_escape_string($conn, $_POST['tag']);
+    $existing_image = mysqli_real_escape_string($conn, $_POST['existing_image']);
+
+    $img = $existing_image;
+    if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] == 0) {
+        $file_extension = pathinfo($_FILES["image_file"]["name"], PATHINFO_EXTENSION);
+        $new_filename = uniqid() . '.' . $file_extension;
+        $target_file = "uploads/travel/" . $new_filename;
+        if (move_uploaded_file($_FILES["image_file"]["tmp_name"], $target_file)) {
+            $img = $target_file;
+        }
+    }
 
     $sql_update = "UPDATE travel_places SET name='$name', description='$desc', image_url='$img', tag='$tag' WHERE id=$id";
     if (mysqli_query($conn, $sql_update)) {
@@ -77,9 +96,10 @@ include('includes/header.php');
                     </h4>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="admin_travel.php">
+                    <form method="POST" action="admin_travel.php" enctype="multipart/form-data">
                         <?php if($edit_data): ?>
                             <input type="hidden" name="id" value="<?= $edit_data['id'] ?>">
+                            <input type="hidden" name="existing_image" value="<?= htmlspecialchars($edit_data['image_url']) ?>">
                         <?php endif; ?>
 
                         <div class="mb-3">
@@ -91,8 +111,14 @@ include('includes/header.php');
                             <textarea name="description" class="form-control" rows="3" required><?= $edit_data ? htmlspecialchars($edit_data['description']) : '' ?></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">URL รูปภาพ</label>
-                            <input type="text" name="image_url" class="form-control" placeholder="เช่น otop/waterfall.jpg หรือลิงก์เว็บ" value="<?= $edit_data ? htmlspecialchars($edit_data['image_url']) : '' ?>" required>
+                            <label class="form-label fw-bold">อัปโหลดรูปภาพสถานที่</label>
+                            <?php if($edit_data && $edit_data['image_url']): ?>
+                                <div class="mb-2">
+                                    <img src="<?= htmlspecialchars($edit_data['image_url']) ?>" alt="Current Image" class="img-thumbnail" style="height:100px; object-fit:cover;">
+                                </div>
+                                <small class="text-muted d-block mb-2">เลือกไฟล์ใหม่หากต้องการเปลี่ยนรูป</small>
+                            <?php endif; ?>
+                            <input type="file" name="image_file" class="form-control" accept="image/*" <?= $edit_data ? '' : 'required' ?>>
                         </div>
                         <div class="mb-4">
                             <label class="form-label fw-bold">ป้ายกำกับ (Tag)</label>
