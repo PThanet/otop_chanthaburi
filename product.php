@@ -80,11 +80,15 @@
                 <div class="card product-card h-100">
                     <div class="product-img-wrapper">
                         <span class="badge product-badge <?= htmlspecialchars($p['tag_color']) ?>"><?= htmlspecialchars($p['tag']) ?></span>
-                        <img src="<?= htmlspecialchars($p['image_url']) ?>" class="card-img-top w-100" style="height:280px; object-fit:cover;" alt="<?= htmlspecialchars($p['name']) ?>">
+                        <a href="order.php?id=<?= $p['id'] ?>">
+                            <img src="<?= htmlspecialchars($p['image_url']) ?>" class="card-img-top w-100" style="height:280px; object-fit:cover;" alt="<?= htmlspecialchars($p['name']) ?>">
+                        </a>
                     </div>
                     <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
                         <div>
-                            <h4 class="fw-bold mb-2" style="color: #004d40;"><?= htmlspecialchars($p['name']) ?></h4>
+                            <a href="order.php?id=<?= $p['id'] ?>" style="text-decoration: none;">
+                                <h4 class="fw-bold mb-2" style="color: #004d40;"><?= htmlspecialchars($p['name']) ?></h4>
+                            </a>
                             <p class="text-success fs-3 fw-bold mb-4">฿<?= htmlspecialchars($p['price']) ?></p>
                         </div>
                         <a href="order.php?id=<?= $p['id'] ?>" class="btn btn-primary btn-order w-100 py-2">

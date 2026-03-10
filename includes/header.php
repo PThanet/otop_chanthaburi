@@ -114,22 +114,14 @@ include_once __DIR__ . '/cart_functions.php';
             transition: 0.3s;
         }
 
-        /* Separator and Cart styling */
-        .order-history-nav-item {
-            display: flex;
-            align-items: center;
+        .btn-gold:hover {
+            background: #ffcc00;
+            color: #000 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);
         }
 
-        .order-history-nav-item::before {
-            content: '';
-            display: inline-block;
-            width: 3px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            margin-right: 15px;
-            margin-left: 15px;
-            border-radius: 2px;
-        }
+
 
         .cart-nav-item {
             display: flex;
@@ -160,14 +152,7 @@ include_once __DIR__ . '/cart_functions.php';
 
                 </ul>
                 <ul class="navbar-nav align-items-center">
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <li class="nav-item order-history-nav-item">
-                            <a class="nav-link pe-0" href="view_orders.php"
-                                style="font-size: 1.1rem; padding-right: 0 !important; margin-right: 5px !important;">
-                                <i class="fas fa-history me-1"></i>ประวัติการสั่งซื้อ
-                            </a>
-                        </li>
-                    <?php endif; ?>
+
                     <li class="nav-item ms-lg-2 cart-nav-item">
                         <a class="nav-link position-relative" href="cart.php" style="font-size: 1.2rem;">
                             <i class="fas fa-shopping-cart"></i>

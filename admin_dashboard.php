@@ -154,7 +154,7 @@ include('includes/db_config.php');
                                     echo "<td>";
                                     if (isset($row['role']) && $row['role'] !== 'superadmin') {
                                         echo "<div class='d-flex justify-content-center align-items-center gap-2'>";
-                                        echo "<a href='admin_demote_user.php?id={$row['id']}' class='btn btn-outline-warning btn-sm fw-bold' style='border-radius: 4px;'><i class='fas fa-level-down-alt'></i> ลดขั้นแอดมิน</a>";
+                                        echo "<a href='admin_demote_user.php?id={$row['id']}' class='btn btn-warning btn-sm fw-bold text-dark shadow-sm' style='border-radius: 4px; border: 1px solid #d39e00;'><i class='fas fa-level-down-alt' style='color: #000;'></i> ลดขั้นแอดมิน</a>";
                                         echo "</div>";
                                     } else {
                                         echo "<span class='text-muted small'>ไม่มีสิทธิ์จัดการ</span>";

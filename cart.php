@@ -191,6 +191,27 @@ $total = getCartTotal();
         background: #d0d0d0;
     }
 
+    .btn-history-cart {
+        width: 100%;
+        padding: 12px;
+        background: white;
+        color: #004d40;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-weight: bold;
+        margin-top: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        text-decoration: none;
+        text-align: center;
+        display: block;
+    }
+
+    .btn-history-cart:hover {
+        border-color: #004d40;
+        background: #f8f9fa;
+    }
+
     .empty-cart {
         text-align: center;
         padding: 80px 40px;
@@ -241,6 +262,43 @@ $total = getCartTotal();
         box-shadow: 0 10px 25px rgba(0, 77, 64, 0.3);
     }
 
+    .empty-cart .btn-history {
+        background: white;
+        color: #004d40;
+        border: 2px solid #004d40;
+        padding: 12px 40px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        border-radius: 0.3rem;
+    }
+
+    .empty-cart .btn-history:hover {
+        background: #f0fdf4;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 77, 64, 0.15);
+    }
+    
+    .btn-header-history {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 10px 20px;
+        background: white;
+        color: #004d40;
+        border: 2px solid #004d40;
+        border-radius: 50px;
+        font-weight: bold;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+
+    .btn-header-history:hover {
+        background: #004d40;
+        color: white;
+        box-shadow: 0 5px 15px rgba(0, 77, 64, 0.2);
+    }
+
     @media (max-width: 992px) {
         .cart-content {
             grid-template-columns: 1fr;
@@ -282,13 +340,27 @@ $total = getCartTotal();
             width: 100px;
             height: 100px;
         }
+
+        .btn-header-history {
+            position: static;
+            transform: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
     }
 </style>
 
 <div class="container cart-container">
-    <div class="cart-header">
-        <h2><i class="fas fa-shopping-cart me-2" style="color: #ff6b6b;"></i>ตะกร้าสินค้า</h2>
-        <p class="text-muted">ตรวจสอบและชำระเงินสินค้าของคุณ</p>
+    <div class="cart-header" style="position: relative;">
+        <div>
+            <h2><i class="fas fa-shopping-cart me-2" style="color: #ff6b6b;"></i>ตะกร้าสินค้า</h2>
+            <p class="text-muted">ตรวจสอบและชำระเงินสินค้าของคุณ</p>
+        </div>
+        <?php if (isset($_SESSION['user_id']) || isset($_SESSION['admin_username'])): ?>
+            <a href="view_orders.php" class="btn-header-history">
+                <i class="fas fa-history me-2"></i>ประวัติการสั่งซื้อ
+            </a>
+        <?php endif; ?>
     </div>
 
     <?php if (empty($cart)): ?>
@@ -296,9 +368,11 @@ $total = getCartTotal();
             <i class="fas fa-inbox"></i>
             <h3>ตะกร้าสินค้าว่างเปล่า</h3>
             <p class="text-muted mb-4">คุณยังไม่ได้เพิ่มสินค้าใด ๆ เข้าตะกร้า</p>
-            <a href="product.php" class="btn btn-primary btn-lg">
-                <i class="fas fa-shopping-basket me-2"></i>ไปเลือกสินค้า
-            </a>
+            <div class="d-flex gap-3 justify-content-center" style="flex-wrap: wrap;">
+                <a href="product.php" class="btn btn-primary btn-lg" style="margin-top: 0;">
+                    <i class="fas fa-shopping-basket me-2"></i>ไปเลือกสินค้า
+                </a>
+            </div>
         </div>
     <?php else: ?>
         <div class="cart-content">
