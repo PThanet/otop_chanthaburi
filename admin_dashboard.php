@@ -36,10 +36,12 @@ include('includes/db_config.php');
                         <a href="admin_travel.php" class="btn btn-success btn-lg fw-bold rounded-pill shadow-sm px-4">
                             <i class="fas fa-map-marked-alt me-2"></i>จัดการสถานที่ท่องเที่ยว
                         </a>
-                        <a href="admin_tradition.php" class="btn btn-warning btn-lg fw-bold rounded-pill shadow-sm px-4 text-dark">
+                        <a href="admin_tradition.php"
+                            class="btn btn-warning btn-lg fw-bold rounded-pill shadow-sm px-4 text-dark">
                             <i class="fas fa-calendar-alt me-2"></i>จัดการงานประเพณี
                         </a>
-                        <a href="admin_product.php" class="btn btn-info btn-lg fw-bold rounded-pill shadow-sm px-4 text-white">
+                        <a href="admin_product.php"
+                            class="btn btn-info btn-lg fw-bold rounded-pill shadow-sm px-4 text-white">
                             <i class="fas fa-shopping-basket me-2"></i>จัดการสินค้า OTOP
                         </a>
                     </div>
@@ -92,7 +94,7 @@ include('includes/db_config.php');
         </div>
     </div>
 
-    <div class="card shadow-sm border-0" style="border-top: 4px solid #0d6efd !important; border-radius: 12px;">
+    <div id="users-table" class="card shadow-sm border-0" style="border-top: 4px solid #0d6efd !important; border-radius: 12px;">
         <div class="card-header bg-white py-3">
             <h3 class="fw-bold text-primary mb-0"><i class="fas fa-users me-2"></i>รายชื่อผู้ใช้งานทั่วไป (Users)
             </h3>
@@ -106,7 +108,8 @@ include('includes/db_config.php');
                             <th width="20%">ชื่อผู้ใช้งาน (Username)</th>
                             <th width="30%">ชื่อ-นามสกุล (Fullname)</th>
                             <th width="20%">วันที่สมัคร</th>
-                            <th width="25%">จัดการ</th>
+                            <th width="15%">จัดการ</th>
+                            <th width="15%">เลื่อนขั้น</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -124,9 +127,15 @@ include('includes/db_config.php');
                                 echo "<td>{$row['fullname']}</td>";
                                 echo "<td>{$created}</td>";
                                 echo "<td>";
-                                echo "<a href='admin_edit_user.php?id={$row['id']}' class='btn btn-warning btn-sm mx-1'><i class='fas fa-edit'></i> แก้ไข</a>";
-                                echo "<a href='admin_promote_user.php?id={$row['id']}' class='btn btn-success btn-sm mx-1' onclick=\"return confirm('คุณแน่ใจหรือไม่ว่าต้องการแต่งตั้ง [{$row['username']}] เป็นผู้ดูแลระบบ?');\"><i class='fas fa-level-up-alt'></i> เลื่อนขั้น</a>";
-                                echo "<a href='admin_delete_user.php?id={$row['id']}' class='btn btn-danger btn-sm mx-1' onclick=\"return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้ [{$row['username']}] นี้ออกจากระบบถาวร?');\"><i class='fas fa-trash-alt'></i> ลบ</a>";
+                                echo "<div class='d-flex justify-content-center align-items-center gap-2'>";
+                                echo "<a href='admin_edit_user.php?id={$row['id']}' class='btn btn-warning btn-sm text-dark px-3 py-1 fw-bold' style='border-radius: 4px;'><i class='fas fa-edit'></i> แก้ไข</a>";
+                                echo "<a href='admin_delete_user.php?id={$row['id']}' class='btn btn-danger btn-sm text-white px-3 py-1 fw-bold' style='border-radius: 4px;'><i class='fas fa-trash-alt'></i> ลบ</a>";
+                                echo "</div>";
+                                echo "</td>";
+                                echo "<td>";
+                                echo "<div class='d-flex justify-content-center align-items-center gap-2'>";
+                                echo "<a href='admin_promote_user.php?id={$row['id']}' class='btn btn-success btn-sm text-white px-3 py-1 fw-bold' style='border-radius: 4px;'><i class='fas fa-level-up-alt'></i> เลื่อนขั้น</a>";
+                                echo "</div>";
                                 echo "</td>";
                                 echo "</tr>";
                             }

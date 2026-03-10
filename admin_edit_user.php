@@ -15,7 +15,7 @@ include('includes/db_config.php');
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id <= 0) {
-    echo "<script>alert('ข้อมูลไม่ถูกต้อง'); window.location='admin_dashboard.php';</script>";
+    echo "<script>alert('ข้อมูลไม่ถูกต้อง'); window.location='admin_dashboard.php#users-table';</script>";
     exit();
 }
 
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
         mysqli_stmt_bind_param($stmt_update, "ssi", $username, $fullname, $id);
 
         if (mysqli_stmt_execute($stmt_update)) {
-            echo "<script>alert('อัปเดตข้อมูลผู้ใช้งานเรียบร้อยแล้ว!'); window.location='admin_dashboard.php';</script>";
+            echo "<script>alert('อัปเดตข้อมูลผู้ใช้งานเรียบร้อยแล้ว!'); window.location='admin_dashboard.php#users-table';</script>";
             exit();
         } else {
             echo "<script>alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');</script>";
@@ -56,7 +56,7 @@ $result = mysqli_stmt_get_result($stmt);
 $user = mysqli_fetch_assoc($result);
 
 if (!$user) {
-    echo "<script>alert('ไม่พบข้อมูลผู้ใช้งาน'); window.location='admin_dashboard.php';</script>";
+    echo "<script>alert('ไม่พบข้อมูลผู้ใช้งาน'); window.location='admin_dashboard.php#users-table';</script>";
     exit();
 }
 ?>
@@ -82,7 +82,7 @@ if (!$user) {
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="admin_dashboard.php" class="btn btn-secondary"><i
+                            <a href="admin_dashboard.php#users-table" class="btn btn-secondary"><i
                                     class="fas fa-arrow-left me-2"></i>กลับ</a>
                             <button type="submit" name="update_user" class="btn btn-primary"><i
                                     class="fas fa-save me-2"></i>บันทึกข้อมูล</button>
