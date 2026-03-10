@@ -1,5 +1,9 @@
-<?php if (session_status() === PHP_SESSION_NONE)
-    session_start(); ?>
+<?php 
+if (session_status() === PHP_SESSION_NONE)
+    session_start();
+
+include_once __DIR__ . '/cart_functions.php';
+?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -115,6 +119,22 @@
                     <li class="nav-item"><a class="nav-link" href="tradition.php">ประเพณี</a></li>
                     <li class="nav-item"><a class="nav-link" href="travel.php">สถานที่ท่องเที่ยว</a></li>
                     <li class="nav-item"><a class="nav-link" href="team.php">ผู้จัดทำ</a></li>
+                    
+                    <li class="nav-item ms-lg-2">
+                        <a class="nav-link position-relative" href="cart.php" style="font-size: 1.2rem;">
+                            <i class="fas fa-shopping-cart"></i>
+                            <?php $cart_count = getCartCount(); ?>
+                            <?php if ($cart_count > 0): ?>
+                                <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.75rem;">
+                                    <?= $cart_count ?>
+                                </span>
+                            <?php else: ?>
+                                <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.75rem; display: none;">
+                                    0
+                                </span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
                     
                     <?php if (isset($_SESSION['admin_username'])): ?>
                         <li class="nav-item">

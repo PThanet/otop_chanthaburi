@@ -169,6 +169,73 @@ include 'includes/header.php';
             thumbnails.forEach(thumb => thumb.classList.remove('active'));
             element.classList.add('active');
         }
+
+        function addToCart() {
+            const productId = <?= $product_id ?>;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            
+            if (productId === 0) {
+                alert('ไม่พบสินค้า');
+                return;
+            }
+
+            if (quantity < 1) {
+                alert('โปรดเลือกจำนวนที่มากกว่า 0');
+                return;
+            }
+
+            // ส่ง AJAX request
+            fetch('add_to_cart_handler.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // แสดงข้อความสำเร็จ
+                    alert('✓ เพิ่มสินค้าเข้าตะกร้าแล้ว (' + data.cart_count + ' ชิ้น)');
+                    
+                    // รีเซตจำนวน
+                    document.getElementById('quantity').value = 1;
+                    
+                    // อัปเดตจำนวนในตะกร้าที่ header
+                    updateCartBadge();
+                } else {
+                    alert('❌ ' + (data.message || 'เพิ่มสินค้าล้มเหลว'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ เกิดข้อผิดพลาด');
+            });
+        }
+
+        function buyNow() {
+            addToCart();
+            setTimeout(() => {
+                window.location.href = 'cart.php';
+            }, 500);
+        }
+
+        function updateCartBadge() {
+            fetch('get_cart_count.php')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.getElementById('cart-badge');
+                if (badge) {
+                    badge.textContent = data.count;
+                    if (data.count > 0) {
+                        badge.style.display = 'inline-block';
+                    }
+                }
+            });
+        }
     </script>
 
     <div class="container">
@@ -197,8 +264,8 @@ include 'includes/header.php';
                     <button onclick="increaseQuantity()">+</button>
                 </div>
                 <div class="actions">
-                    <button class="add-to-cart">Add to Cart</button>
-                    <button class="buy-now">Buy Now</button>
+                    <button class="add-to-cart" onclick="addToCart()">Add to Cart</button>
+                    <button class="buy-now" onclick="buyNow()">Buy Now</button>
                 </div>
             </div>
         </div>
