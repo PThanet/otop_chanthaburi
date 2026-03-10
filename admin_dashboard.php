@@ -10,6 +10,8 @@ if (!isset($_SESSION['admin_username'])) {
     exit();
 }
 
+$current_admin_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : 'superadmin'; // Assuming superadmin if not set for safety during migration
+
 include('includes/header.php');
 include('includes/db_config.php');
 ?>
@@ -33,17 +35,23 @@ include('includes/db_config.php');
                         <p class="text-muted mb-0 small">เมนูลัดสำหรับเพิ่ม ลบ หรือแก้ไขข้อมูลต่างๆ บนหน้าเว็บ</p>
                     </div>
                     <div class="d-flex flex-wrap gap-2">
+                        <?php if($current_admin_role === 'superadmin' || $current_admin_role === 'admin_travel'): ?>
                         <a href="admin_travel.php" class="btn btn-success btn-lg fw-bold rounded-pill shadow-sm px-4">
                             <i class="fas fa-map-marked-alt me-2"></i>จัดการสถานที่ท่องเที่ยว
                         </a>
-                        <a href="admin_tradition.php"
-                            class="btn btn-warning btn-lg fw-bold rounded-pill shadow-sm px-4 text-dark">
+                        <?php endif; ?>
+
+                        <?php if($current_admin_role === 'superadmin' || $current_admin_role === 'admin_tradition'): ?>
+                        <a href="admin_tradition.php" class="btn btn-warning btn-lg fw-bold rounded-pill shadow-sm px-4 text-dark">
                             <i class="fas fa-calendar-alt me-2"></i>จัดการงานประเพณี
                         </a>
-                        <a href="admin_product.php"
-                            class="btn btn-info btn-lg fw-bold rounded-pill shadow-sm px-4 text-white">
+                        <?php endif; ?>
+
+                        <?php if($current_admin_role === 'superadmin' || $current_admin_role === 'admin_product'): ?>
+                        <a href="admin_product.php" class="btn btn-info btn-lg fw-bold rounded-pill shadow-sm px-4 text-white">
                             <i class="fas fa-shopping-basket me-2"></i>จัดการสินค้า OTOP
                         </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -52,7 +60,8 @@ include('includes/db_config.php');
     <div class="card shadow-sm border-0 mb-5" style="border-top: 4px solid #dc3545 !important; border-radius: 12px;">
         ...
     </div>
-    <div class="card shadow-sm border-0 mb-5" style="border-top: 4px solid #dc3545 !important; border-radius: 12px;">
+    
+    <div class="card shadow-sm border-0 mb-5" style="border-top: 4px solid #dc3545 !important; border-radius: 12px;" id="admins-table">
         <div class="card-header bg-white py-3">
             <h3 class="fw-bold text-danger mb-0"><i class="fas fa-user-shield me-2"></i>รายชื่อผู้ดูแลระบบ (Admins)
             </h3>
@@ -63,29 +72,61 @@ include('includes/db_config.php');
                     <thead class="table-danger">
                         <tr>
                             <th width="10%">ID</th>
-                            <th width="30%">ชื่อผู้ใช้งาน (Username)</th>
-                            <th width="40%">ตำแหน่ง (Position)</th>
-                            <th width="20%">วันที่เป็นผู้ดูแล</th>
+                            <?php if ($current_admin_role === 'superadmin'): ?>
+                                <th width="25%">ชื่อผู้ใช้งาน (Username)</th>
+                            <?php endif; ?>
+                            <th width="30%">ชื่อ-นามสกุล (Fullname)</th>
+                            <th width="20%">ตำแหน่ง (Role)</th>
+                            <?php if ($current_admin_role === 'superadmin'): ?>
+                                <th width="15%">จัดการ</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        // ดึงข้อมูลจากตาราง admins
                         $sql_admins = "SELECT * FROM admins ORDER BY id ASC";
                         $result_admins = mysqli_query($conn, $sql_admins);
 
                         if (mysqli_num_rows($result_admins) > 0) {
                             while ($row = mysqli_fetch_assoc($result_admins)) {
-                                $created = isset($row['created_at']) ? $row['created_at'] : '-';
+                                
+                                $role_display = "ผู้ดูแลระบบสูงสุด";
+                                $role_badge = "bg-danger";
+                                
+                                if (isset($row['role'])) {
+                                    switch ($row['role']) {
+                                        case 'admin_travel': $role_display = "แอดมินสถานที่ท่องเที่ยว"; $role_badge = "bg-success"; break;
+                                        case 'admin_tradition': $role_display = "แอดมินงานประเพณี"; $role_badge = "bg-warning text-dark"; break;
+                                        case 'admin_product': $role_display = "แอดมินสินค้า OTOP"; $role_badge = "bg-info"; break;
+                                        case 'superadmin': $role_display = "ผู้ดูแลระบบสูงสุด"; $role_badge = "bg-danger"; break;
+                                    }
+                                }
+
                                 echo "<tr>";
                                 echo "<td>{$row['id']}</td>";
-                                echo "<td class='fw-bold'>{$row['username']}</td>";
+                                
+                                if ($current_admin_role === 'superadmin') {
+                                    echo "<td class='fw-bold'>{$row['username']}</td>";
+                                }
+
                                 echo "<td>{$row['fullname']}</td>";
-                                echo "<td>{$created}</td>";
+                                echo "<td><span class='badge {$role_badge}'>{$role_display}</span></td>";
+                                
+                                if ($current_admin_role === 'superadmin') {
+                                    echo "<td>";
+                                    if (isset($row['role']) && $row['role'] !== 'superadmin') {
+                                        echo "<div class='d-flex justify-content-center align-items-center gap-2'>";
+                                        echo "<a href='admin_demote_user.php?id={$row['id']}' class='btn btn-outline-warning btn-sm fw-bold' style='border-radius: 4px;'><i class='fas fa-level-down-alt'></i> ลดขั้นแอดมิน</a>";
+                                        echo "</div>";
+                                    } else {
+                                        echo "<span class='text-muted small'>ไม่มีสิทธิ์จัดการ</span>";
+                                    }
+                                    echo "</td>";
+                                }
                                 echo "</tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='4' class='text-muted py-3'>ไม่พบข้อมูลผู้ดูแลระบบ</td></tr>";
+                            echo "<tr><td colspan='5' class='text-muted py-3'>ไม่พบข้อมูลผู้ดูแลระบบ</td></tr>";
                         }
                         ?>
                     </tbody>
@@ -94,6 +135,7 @@ include('includes/db_config.php');
         </div>
     </div>
 
+    <?php if ($current_admin_role === 'superadmin'): ?>
     <div id="users-table" class="card shadow-sm border-0" style="border-top: 4px solid #0d6efd !important; border-radius: 12px;">
         <div class="card-header bg-white py-3">
             <h3 class="fw-bold text-primary mb-0"><i class="fas fa-users me-2"></i>รายชื่อผู้ใช้งานทั่วไป (Users)
@@ -114,7 +156,6 @@ include('includes/db_config.php');
                     </thead>
                     <tbody>
                         <?php
-                        // ดึงข้อมูลจากตาราง users
                         $sql_users = "SELECT * FROM users ORDER BY id ASC";
                         $result_users = mysqli_query($conn, $sql_users);
 
@@ -140,7 +181,7 @@ include('includes/db_config.php');
                                 echo "</tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='4' class='text-muted py-3'>ไม่พบข้อมูลผู้ใช้งาน</td></tr>";
+                            echo "<tr><td colspan='6' class='text-muted py-3'>ไม่พบข้อมูลผู้ใช้งาน</td></tr>";
                         }
                         ?>
                     </tbody>
@@ -148,6 +189,8 @@ include('includes/db_config.php');
             </div>
         </div>
     </div>
+    
+    <?php endif; ?>
 
 </div>
 

@@ -9,13 +9,21 @@ if (isset($_POST['register'])) {
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
 
-    $sql = "INSERT INTO users (username, password, fullname) VALUES ('$username', '$password', '$fullname')";
+    // ตรวจสอบว่า username ซ้ำหรือไม่
+    $check_user = mysqli_query($conn, "SELECT id FROM users WHERE username = '$username'");
+    $check_admin = mysqli_query($conn, "SELECT id FROM admins WHERE username = '$username'");
 
-    if (mysqli_query($conn, $sql)) {
-        echo "<script>alert('สมัครสมาชิกสำเร็จ!'); window.location='login.php';</script>";
-    }
-    else {
-        echo "<div class='alert alert-danger text-center mt-3'>เกิดข้อผิดพลาดในการสมัครสมาชิก: " . mysqli_error($conn) . "</div>";
+    if (mysqli_num_rows($check_user) > 0 || mysqli_num_rows($check_admin) > 0) {
+        echo "<div class='alert alert-warning text-center mt-3 shadow-sm'>ชื่อผู้ใช้งานนี้ถูกใช้งานไปแล้ว กรุณาเลือกชื่ออื่น</div>";
+    } else {
+        $sql = "INSERT INTO users (username, password, fullname) VALUES ('$username', '$password', '$fullname')";
+
+        if (mysqli_query($conn, $sql)) {
+            echo "<script>alert('สมัครสมาชิกสำเร็จ!'); window.location='login.php';</script>";
+        }
+        else {
+            echo "<div class='alert alert-danger text-center mt-3 shadow-sm'>เกิดข้อผิดพลาดในการสมัครสมาชิก: " . mysqli_error($conn) . "</div>";
+        }
     }
 }
 ?>

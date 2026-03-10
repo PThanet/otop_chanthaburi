@@ -42,10 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_promote'])) {
         if (mysqli_stmt_num_rows($check_stmt) > 0) {
             echo "<script>alert('ผู้ใช้นี้มีชื่ออยู่ในระบบแอดมินแล้ว หรือ Username ซ้ำ'); window.location='admin_dashboard.php#users-table';</script>";
         } else {
+            // รับค่า Role จาก Form (default: superadmin)
+            $role = isset($_POST['admin_role']) ? $_POST['admin_role'] : 'superadmin';
+            
             // โอนย้ายข้อมูลไปตาราง admins
-            $insert_sql = "INSERT INTO admins (username, password, fullname) VALUES (?, ?, ?)";
+            $insert_sql = "INSERT INTO admins (username, password, fullname, role) VALUES (?, ?, ?, ?)";
             $insert_stmt = mysqli_prepare($conn, $insert_sql);
-            mysqli_stmt_bind_param($insert_stmt, "sss", $username, $password, $fullname);
+            mysqli_stmt_bind_param($insert_stmt, "ssss", $username, $password, $fullname, $role);
 
             if (mysqli_stmt_execute($insert_stmt)) {
                 // ถ้า insert สำเร็จ ให้ลบจากตาราง users
@@ -98,8 +101,17 @@ if (!$user) {
                     </div>
                     
                     <form action="admin_promote_user.php?id=<?= $id ?>" method="POST">
+                        <div class="mb-4 text-start">
+                            <label for="admin_role" class="form-label fw-bold">เลือกตำแหน่งแอดมิน</label>
+                            <select class="form-select form-select-lg" name="admin_role" id="admin_role" required>
+                                <option value="superadmin">ผู้ดูแลระบบสูงสุด (Super Admin)</option>
+                                <option value="admin_travel">แอดมินสถานที่ท่องเที่ยว (Travel Admin)</option>
+                                <option value="admin_tradition">แอดมินงานประเพณี (Tradition Admin)</option>
+                                <option value="admin_product">แอดมินสินค้า OTOP (Product Admin)</option>
+                            </select>
+                        </div>
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="admin_dashboard.php#users-table" class="btn btn-secondary px-4"><i class="fas fa-arrow-left me-2"></i>กลับ</a>
+                            <a href="admin_dashboard.php#users-table" class="btn btn-secondary px-4"><i class="fas fa-arrow-left me-2"></i>ยกเลิก</a>
                             <button type="submit" name="confirm_promote" class="btn btn-success px-4"><i class="fas fa-check-circle me-2"></i>ยืนยันการแต่งตั้ง</button>
                         </div>
                     </form>

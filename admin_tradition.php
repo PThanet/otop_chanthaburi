@@ -9,6 +9,12 @@ if (!isset($_SESSION['admin_username'])) {
     exit();
 }
 
+$current_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : 'superadmin';
+if ($current_role !== 'superadmin' && $current_role !== 'admin_tradition') {
+    echo "<script>alert('สิทธิ์การเข้าถึงถูกปฏิเสธ! คุณไม่มีสิทธิ์จัดการส่วนนี้'); window.location='admin_dashboard.php';</script>";
+    exit();
+}
+
 include('includes/db_config.php');
 
 // --- จัดการการลบข้อมูล (Delete) ---

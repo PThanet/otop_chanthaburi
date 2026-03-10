@@ -17,6 +17,10 @@ if (isset($_POST['login_admin'])) {
         $_SESSION['admin_id'] = $user['id'];
         $_SESSION['admin_username'] = $user['username'];
         $_SESSION['admin_fullname'] = $user['fullname'];
+        
+        // ตรวจสอบและดึงข้อมูล role, ปกติ admin จะได้ superadmin
+        $_SESSION['admin_role'] = isset($user['role']) ? $user['role'] : 'superadmin';
+
         echo "<script>alert('ยินดีต้อนรับผู้ดูแลระบบ!'); window.location='admin_dashboard.php';</script>";
     }
     else {

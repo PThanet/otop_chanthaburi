@@ -123,14 +123,14 @@
                             </a>
                         </li>
                         <li class="nav-item dropdown ms-lg-3">
-                            <a class="btn btn-danger rounded-pill px-4 text-white shadow-sm" href="logout.php">
+                            <a class="btn btn-danger rounded-pill px-4 text-white shadow-sm" href="logout.php" onclick="return confirm('คุณต้องการออกจากระบบใช่หรือไม่?');">
                                 <?= $_SESSION['admin_fullname'] ?> (Admin) <i class="fas fa-sign-out-alt ms-1"></i>
                             </a>
                         </li>
 
                     <?php elseif (isset($_SESSION['username'])): ?>
                         <li class="nav-item dropdown ms-lg-3">
-                            <a class="btn btn-outline-warning rounded-pill px-4 text-white" href="logout.php">
+                            <a class="btn btn-outline-warning rounded-pill px-4 text-white" href="logout.php" onclick="return confirm('คุณต้องการออกจากระบบใช่หรือไม่?');">
                                 <?= $_SESSION['fullname'] ?> <i class="fas fa-sign-out-alt ms-1"></i>
                             </a>
                         </li>
