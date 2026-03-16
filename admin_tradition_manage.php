@@ -207,6 +207,43 @@ include('includes/header.php');
     .image-upload-item {
         display: flex;
         flex-direction: column;
+        min-width: 0;
+        position: relative;
+    }
+
+    .image-upload-item .image-wrapper {
+        position: relative;
+        display: block;
+        padding: 4px;
+        padding-bottom: 4px;
+        margin: 0 auto 0.5rem;
+        height: auto;
+        overflow: visible;
+    }
+
+    .btn-remove-image {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 22px;
+        height: 22px;
+        background: #dc3545;
+        color: white;
+        border: 2px solid white;
+        border-radius: 50%;
+        font-size: 12px;
+        line-height: 18px;
+        text-align: center;
+        cursor: pointer;
+        z-index: 10;
+        padding: 0;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
+    }
+
+    .btn-remove-image:hover {
+        background: #c82333;
+        transform: scale(1.15);
     }
 
     .image-upload-label {
@@ -233,6 +270,9 @@ include('includes/header.php');
         cursor: pointer;
         transition: all 0.3s ease;
         font-size: 0.85rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .file-input-custom:hover {
@@ -244,13 +284,15 @@ include('includes/header.php');
         display: none;
     }
 
-    .image-preview {
+    .image-upload-item .image-wrapper img.image-preview {
+        position: static;
         width: 100%;
-        height: 100px;
+        aspect-ratio: 1;
+        height: auto;
         border-radius: 10px;
         object-fit: cover;
         border: 2px solid #e0e0e0;
-        margin-top: 0.5rem;
+        display: block;
     }
 
     .btn-submit {
@@ -523,20 +565,23 @@ include('includes/header.php');
                         <label class="form-label"><i class="fas fa-images me-1"></i>รูปภาพ (สูงสุด 4 รูป)</label>
                         <div class="image-upload-group">
                             <?php for ($i = 1; $i <= 4; $i++): ?>
-                                <div class="image-upload-item">
+                                <div class="image-upload-item" data-slot="<?= $i ?>">
                                     <div class="image-upload-label">รูปที่ <?= $i ?></div>
+                                    <?php 
+                                        $image_key = 'image_url' . ($i > 1 ? '_' . $i : '');
+                                        if ($edit_data && !empty($edit_data[$image_key])): 
+                                    ?>
+                                        <div class="image-wrapper">
+                                            <img src="<?= htmlspecialchars($edit_data[$image_key]) ?>" class="image-preview" alt="Preview">
+                                            <button type="button" class="btn-remove-image" title="ลบรูป">&times;</button>
+                                        </div>
+                                    <?php endif; ?>
                                     <div class="file-input-wrapper">
                                         <label class="file-input-custom" data-image="<?= $i ?>">
                                             <i class="fas fa-cloud-upload-alt"></i> เลือกรูป
                                             <input type="file" name="image_file_<?= $i ?>" class="file-input-hidden" accept="image/*">
                                         </label>
                                     </div>
-                                    <?php 
-                                        $image_key = 'image_url' . ($i > 1 ? '_' . $i : '');
-                                        if ($edit_data && !empty($edit_data[$image_key])): 
-                                    ?>
-                                        <img src="<?= htmlspecialchars($edit_data[$image_key]) ?>" class="image-preview" alt="Preview">
-                                    <?php endif; ?>
                                 </div>
                             <?php endfor; ?>
                         </div>
@@ -621,24 +666,62 @@ document.querySelectorAll('.file-input-custom').forEach(label => {
     
     input.addEventListener('change', function(e) {
         if (this.files && this.files[0]) {
+            const item = label.closest('.image-upload-item');
             const reader = new FileReader();
             reader.onload = function(event) {
-                const preview = label.parentElement.querySelector('.image-preview');
-                if (preview) {
-                    preview.src = event.target.result;
-                } else {
+                let wrapper = item.querySelector('.image-wrapper');
+                if (!wrapper) {
+                    wrapper = document.createElement('div');
+                    wrapper.className = 'image-wrapper';
                     const img = document.createElement('img');
-                    img.src = event.target.result;
                     img.className = 'image-preview';
-                    label.parentElement.appendChild(img);
+                    wrapper.appendChild(img);
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'btn-remove-image';
+                    removeBtn.title = 'ลบรูป';
+                    removeBtn.innerHTML = '&times;';
+                    wrapper.appendChild(removeBtn);
+                    const fileWrapper = item.querySelector('.file-input-wrapper');
+                    item.insertBefore(wrapper, fileWrapper);
+                    attachRemoveHandler(removeBtn);
                 }
+                wrapper.querySelector('.image-preview').src = event.target.result;
+                const rmBtn = wrapper.querySelector('.btn-remove-image');
+                if (rmBtn) rmBtn.style.display = '';
             };
             reader.readAsDataURL(this.files[0]);
+            const fileInput = label.querySelector('.file-input-hidden');
             label.innerHTML = '<i class="fas fa-check-circle" style="color: #6f42c1;"></i> ' + this.files[0].name;
+            if (fileInput) label.appendChild(fileInput);
             label.style.background = '#f1edfa';
             label.style.borderColor = '#6f42c1';
             label.style.color = '#5a32a3';
         }
     });
 });
+
+function attachRemoveHandler(btn) {
+    btn.addEventListener('click', function() {
+        const item = this.closest('.image-upload-item');
+        const slot = item.dataset.slot;
+        const wrapper = item.querySelector('.image-wrapper');
+        if (wrapper) wrapper.remove();
+        const fileInput = item.querySelector('.file-input-hidden');
+        if (fileInput) fileInput.value = '';
+        const existingField = document.querySelector('input[name="existing_image_' + slot + '"]');
+        if (existingField) existingField.value = '';
+        const label = item.querySelector('.file-input-custom');
+        if (label) {
+            const fi = label.querySelector('.file-input-hidden');
+            label.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> เลือกรูป';
+            if (fi) label.appendChild(fi);
+            label.style.background = '';
+            label.style.borderColor = '';
+            label.style.color = '';
+        }
+    });
+}
+
+document.querySelectorAll('.btn-remove-image').forEach(attachRemoveHandler);
 </script>

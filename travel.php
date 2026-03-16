@@ -70,6 +70,14 @@ include('includes/db_config.php'); // เพิ่มการเชื่อม
         text-decoration: none !important;
         color: inherit !important;
     }
+
+    .travel-overlay p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 </style>
 
 <div class="container my-5 py-4">

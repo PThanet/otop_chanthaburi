@@ -186,13 +186,15 @@ include('includes/header.php');
         font-family: 'Sarabun', sans-serif;
     }
 
-    .image-preview {
-        width: 90px;
-        height: 90px;
+    .image-upload-item .image-wrapper img.image-preview {
+        position: static;
+        width: 100%;
+        aspect-ratio: 1;
+        height: auto;
         border-radius: 8px;
         object-fit: cover;
         border: 2px solid #e0e0e0;
-        margin-right: 0.5rem;
+        display: block;
     }
 
     .image-upload-group {
@@ -207,6 +209,44 @@ include('includes/header.php');
         border-radius: 10px;
         padding: 1rem;
         background: #f9f9f9;
+        min-width: 0;
+        position: relative;
+        text-align: center;
+    }
+
+    .image-upload-item .image-wrapper {
+        position: relative;
+        display: block;
+        padding: 4px;
+        padding-bottom: 4px;
+        margin: 0 auto 0.5rem;
+        height: auto;
+        overflow: visible;
+    }
+
+    .btn-remove-image {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 22px;
+        height: 22px;
+        background: #dc3545;
+        color: white;
+        border: 2px solid white;
+        border-radius: 50%;
+        font-size: 12px;
+        line-height: 18px;
+        text-align: center;
+        cursor: pointer;
+        z-index: 10;
+        padding: 0;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
+    }
+
+    .btn-remove-image:hover {
+        background: #c82333;
+        transform: scale(1.15);
     }
 
     /* custom file label */
@@ -221,6 +261,9 @@ include('includes/header.php');
         font-weight: 600;
         cursor: pointer;
         text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .file-input-hidden { display: none; }
@@ -488,10 +531,13 @@ include('includes/header.php');
                                 $img_key = $i === 1 ? 'image_url' : 'image_url_' . $i;
                                 $img_src = $edit_data ? ($edit_data[$img_key] ?? '') : '';
                             ?>
-                                <div class="image-upload-item">
+                                <div class="image-upload-item" data-slot="<?= $i ?>">
                                     <div class="image-upload-label">รูปที่ <?= $i ?></div>
                                     <?php if($img_src): ?>
-                                        <img src="<?= htmlspecialchars($img_src) ?>" class="image-preview" style="display: block; margin-bottom: 0.5rem;">
+                                        <div class="image-wrapper">
+                                            <img src="<?= htmlspecialchars($img_src) ?>" class="image-preview" style="display: block;">
+                                            <button type="button" class="btn-remove-image" title="ลบรูป">&times;</button>
+                                        </div>
                                     <?php endif; ?>
                                     <label class="file-input-custom" data-image="<?= $i ?>">
                                         <i class="fas fa-cloud-upload-alt"></i> เลือกรูป
@@ -595,23 +641,62 @@ document.querySelectorAll('.file-input-custom').forEach(label => {
     if (!input) return;
     input.addEventListener('change', function() {
         if (this.files && this.files[0]) {
+            const item = label.closest('.image-upload-item');
             const reader = new FileReader();
             reader.onload = function(e) {
-                const preview = label.parentElement.querySelector('.image-preview');
-                if (preview) preview.src = e.target.result;
-                else {
+                let wrapper = item.querySelector('.image-wrapper');
+                if (!wrapper) {
+                    wrapper = document.createElement('div');
+                    wrapper.className = 'image-wrapper';
                     const img = document.createElement('img');
                     img.className = 'image-preview';
-                    img.src = e.target.result;
-                    label.parentElement.insertBefore(img, label);
+                    img.style.display = 'block';
+                    wrapper.appendChild(img);
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'btn-remove-image';
+                    removeBtn.title = 'ลบรูป';
+                    removeBtn.innerHTML = '&times;';
+                    wrapper.appendChild(removeBtn);
+                    item.insertBefore(wrapper, label);
+                    attachRemoveHandler(removeBtn);
                 }
+                wrapper.querySelector('.image-preview').src = e.target.result;
+                const rmBtn = wrapper.querySelector('.btn-remove-image');
+                if (rmBtn) rmBtn.style.display = '';
             };
             reader.readAsDataURL(this.files[0]);
+            const fileInput = label.querySelector('.file-input-hidden');
             label.innerHTML = '<i class="fas fa-check-circle" style="color: #4caf50;"></i> ' + this.files[0].name;
+            if (fileInput) label.appendChild(fileInput);
             label.style.background = '#e8f5e9';
             label.style.borderColor = '#4caf50';
             label.style.color = '#2e7d32';
         }
     });
 });
+
+function attachRemoveHandler(btn) {
+    btn.addEventListener('click', function() {
+        const item = this.closest('.image-upload-item');
+        const slot = item.dataset.slot;
+        const wrapper = item.querySelector('.image-wrapper');
+        if (wrapper) wrapper.remove();
+        const fileInput = item.querySelector('.file-input-hidden');
+        if (fileInput) fileInput.value = '';
+        const existingField = document.querySelector('input[name="existing_image_' + slot + '"]');
+        if (existingField) existingField.value = '';
+        const label = item.querySelector('.file-input-custom');
+        if (label) {
+            const fi = label.querySelector('.file-input-hidden');
+            label.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> เลือกรูป';
+            if (fi) label.appendChild(fi);
+            label.style.background = '';
+            label.style.borderColor = '';
+            label.style.color = '';
+        }
+    });
+}
+
+document.querySelectorAll('.btn-remove-image').forEach(attachRemoveHandler);
 </script>

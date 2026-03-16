@@ -41,6 +41,14 @@
         text-decoration: none !important;
         color: inherit !important;
     }
+
+    .tradition-card .p-4 p.text-muted {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 </style>
 
 <div class="container my-5 py-4">
