@@ -180,7 +180,7 @@ include('includes/db_config.php');
         </div>
     </div>
 
-    <?php if ($current_admin_role === 'superadmin'): ?>
+    <?php if ($current_admin_role === 'superadmin' || $current_admin_role === 'admin_product'): ?>
         <div id="users-table" class="card shadow-sm border-0"
             style="border-top: 4px solid #0d6efd !important; border-radius: 12px;">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
@@ -201,15 +201,18 @@ include('includes/db_config.php');
             </div>
             <div class="card-body">
                 <div class="table-responsive">
+                    <?php $users_table_cols = ($current_admin_role === 'superadmin') ? 6 : 4; ?>
                     <table class="table table-hover table-bordered align-middle text-center">
                         <thead class="table-primary">
                             <tr>
                                 <th width="5%">ID</th>
-                                <th width="20%">ชื่อผู้ใช้งาน (Username)</th>
-                                <th width="30%">ชื่อ-นามสกุล (Fullname)</th>
-                                <th width="20%">วันที่สมัคร</th>
-                                <th width="15%">จัดการ</th>
-                                <th width="15%">เลื่อนขั้น</th>
+                                <th width="15%">ชื่อผู้ใช้งาน (Username)</th>
+                                <th width="25%">ชื่อ-นามสกุล (Fullname)</th>
+                                <th width="15%">วันที่สมัคร</th>
+                                <?php if ($current_admin_role === 'superadmin'): ?>
+                                    <th width="25%">จัดการ</th>
+                                    <th width="15%">เลื่อนขั้น</th>
+                                <?php endif; ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -232,21 +235,25 @@ include('includes/db_config.php');
                                     echo "<td class='fw-bold text-primary'>{$row['username']}</td>";
                                     echo "<td>{$row['fullname']}</td>";
                                     echo "<td>{$created}</td>";
-                                    echo "<td>";
-                                    echo "<div class='d-flex justify-content-center align-items-center gap-2'>";
-                                    echo "<a href='admin_edit_user.php?id={$row['id']}' class='btn btn-warning btn-sm text-dark px-3 py-1 fw-bold' style='border-radius: 4px;'><i class='fas fa-edit'></i> แก้ไข</a>";
-                                    echo "<a href='admin_delete_user.php?id={$row['id']}' class='btn btn-danger btn-sm text-white px-3 py-1 fw-bold' style='border-radius: 4px;'><i class='fas fa-trash-alt'></i> ลบ</a>";
-                                    echo "</div>";
-                                    echo "</td>";
-                                    echo "<td>";
-                                    echo "<div class='d-flex justify-content-center align-items-center gap-2'>";
-                                    echo "<a href='admin_promote_user.php?id={$row['id']}' class='btn btn-success btn-sm text-white px-3 py-1 fw-bold' style='border-radius: 4px;'><i class='fas fa-level-up-alt'></i> เลื่อนขั้น</a>";
-                                    echo "</div>";
-                                    echo "</td>";
+                                    if ($current_admin_role === 'superadmin') {
+                                        echo "<td>";
+                                        echo "<div class='d-flex flex-wrap justify-content-center align-items-center gap-2'>";
+                                        echo "<a href='admin_orders.php?user_id={$row['id']}' class='btn btn-info btn-sm text-white px-2 py-1 fw-bold' style='border-radius: 4px;'><i class='fas fa-history'></i> ประวัติสั่งซื้อ</a>";
+                                        echo "<a href='admin_edit_user.php?id={$row['id']}' class='btn btn-warning btn-sm text-dark px-2 py-1 fw-bold' style='border-radius: 4px;'><i class='fas fa-edit'></i> แก้ไข</a>";
+                                        echo "<a href='admin_delete_user.php?id={$row['id']}' class='btn btn-danger btn-sm text-white px-2 py-1 fw-bold' style='border-radius: 4px;'><i class='fas fa-trash-alt'></i> ลบ</a>";
+                                        echo "</div>";
+                                        echo "</td>";
+
+                                        echo "<td>";
+                                        echo "<div class='d-flex justify-content-center align-items-center gap-2'>";
+                                        echo "<a href='admin_promote_user.php?id={$row['id']}' class='btn btn-success btn-sm text-white px-3 py-1 fw-bold' style='border-radius: 4px;'><i class='fas fa-level-up-alt'></i> เลื่อนขั้น</a>";
+                                        echo "</div>";
+                                        echo "</td>";
+                                    }
                                     echo "</tr>";
                                 }
                             } else {
-                                echo "<tr><td colspan='6' class='text-muted py-3'>ไม่พบข้อมูลผู้ใช้งาน</td></tr>";
+                                echo "<tr><td colspan='" . $users_table_cols . "' class='text-muted py-3'>ไม่พบข้อมูลผู้ใช้งาน</td></tr>";
                             }
                             ?>
                         </tbody>

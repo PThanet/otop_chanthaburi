@@ -11,6 +11,7 @@ if (!isset($_SESSION['admin_username'])) {
 // รับ parameter
 $filter_status = isset($_GET['status']) ? $_GET['status'] : '';
 $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+$user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
 
 // สร้าง SQL
 $where = "WHERE 1=1";
@@ -19,6 +20,9 @@ if (!empty($filter_status)) {
 }
 if (!empty($search)) {
     $where .= " AND (order_number LIKE '%$search%' OR customer_name LIKE '%$search%' OR customer_phone LIKE '%$search%')";
+}
+if ($user_id > 0) {
+    $where .= " AND user_id = $user_id";
 }
 
 $sql = "SELECT * FROM orders $where ORDER BY created_at DESC";
@@ -325,6 +329,9 @@ $order_statuses = [
     <!-- ตัวกรอง -->
     <div class="filter-section">
         <form method="GET" class="filter-row">
+            <?php if ($user_id > 0): ?>
+                <input type="hidden" name="user_id" value="<?= $user_id ?>">
+            <?php endif; ?>
             <div class="filter-group">
                 <input type="text" name="search" placeholder="ค้นหา: เลขออเดอร์, ชื่อ, เบอร์โทร" value="<?= htmlspecialchars($search) ?>">
             </div>
