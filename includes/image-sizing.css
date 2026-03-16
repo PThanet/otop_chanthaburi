@@ -1,0 +1,96 @@
+/* ========================================
+   IMAGE SIZING & OPTIMIZATION RULES
+   ======================================== */
+
+/* ตั้งค่าปรับแต่งขนาดรูปภาพให้เท่ากันทั่วไป */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* รูปภาพในการ์ด */
+.travel-card img,
+.tradition-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* รูปภาพ Thumbnail */
+.thumbnail,
+.img-thumbnail {
+    max-width: 100%;
+    height: auto;
+}
+
+/* รูปภาพหลัก */
+.main-image,
+.detail-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Gallery Images - ยูทิลิตี้ */
+.gallery-img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    object-fit: cover;
+}
+
+/* อัปโหลดรูปภาพส่วนหนึ่งของฟอร์ม - ตัวอย่างการแสดง */
+.upload-preview {
+    max-width: 150px;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* ไคลเอ็นต์ side image resizing */
+@media (max-width: 768px) {
+    .main-image {
+        height: 350px !important;
+    }
+    
+    .travel-img-wrapper,
+    .tradition-icon-wrapper {
+        height: 200px !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .main-image {
+        height: 500px !important;
+    }
+}
+
+/* รูปภาพในโต๊ะแพทริทอรี */
+.table img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+}
+
+/* ป้องกันรูปภาพจากการเสียหาย */
+img[src=""],
+img:not([src]) {
+    display: none;
+}
+
+/* รูปภาพ wrapper - รักษาอัตราส่วน */
+.image-wrapper {
+    position: relative;
+    padding-bottom: 75%; /* 4:3 aspect ratio */
+    height: 0;
+    overflow: hidden;
+}
+
+.image-wrapper img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+}

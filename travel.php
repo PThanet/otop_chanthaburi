@@ -11,6 +11,8 @@ include('includes/db_config.php'); // เพิ่มการเชื่อม
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         background: #fff;
         box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        cursor: pointer;
+        height: 100%;
     }
     
     .travel-card:hover {
@@ -63,6 +65,11 @@ include('includes/db_config.php'); // เพิ่มการเชื่อม
         font-size: 0.8rem;
         backdrop-filter: blur(5px);
     }
+
+    a[href*="travel_detail.php"] {
+        text-decoration: none !important;
+        color: inherit !important;
+    }
 </style>
 
 <div class="container my-5 py-4">
@@ -81,18 +88,25 @@ include('includes/db_config.php'); // เพิ่มการเชื่อม
         if (mysqli_num_rows($result) > 0) {
             while ($place = mysqli_fetch_assoc($result)): ?>
                 <div class="col-lg-6">
-                    <div class="travel-card shadow">
-                        <div class="travel-img-wrapper">
-                            <img src="<?= htmlspecialchars($place['image_url']) ?>" alt="<?= htmlspecialchars($place['name']) ?>">
-                            <div class="location-tag"><?= htmlspecialchars($place['tag']) ?></div>
-                            <div class="travel-overlay">
-                                <h3 class="fw-bold mb-2"><?= htmlspecialchars($place['name']) ?></h3>
-                                <p class="mb-0 fw-light" style="font-size: 0.95rem; line-height: 1.6;">
-                                    <?= htmlspecialchars($place['description']) ?>
-                                </p>
+                    <a href="travel_detail.php?id=<?= $place['id'] ?>" style="text-decoration: none; color: inherit;">
+                        <div class="travel-card shadow">
+                            <div class="travel-img-wrapper">
+                                <img src="<?= htmlspecialchars($place['image_url']) ?>" alt="<?= htmlspecialchars($place['name']) ?>">
+                                <div class="location-tag"><?= htmlspecialchars($place['tag']) ?></div>
+                                <div class="travel-overlay">
+                                    <h3 class="fw-bold mb-2"><?= htmlspecialchars($place['name']) ?></h3>
+                                    <p class="mb-3 fw-light" style="font-size: 0.95rem; line-height: 1.6;">
+                                        <?= htmlspecialchars($place['description']) ?>
+                                    </p>
+                                    <div>
+                                        <span class="btn btn-sm btn-light rounded-pill">
+                                            <i class="fas fa-arrow-right me-2"></i>ดูรายละเอียด
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             <?php endwhile; 
         } else {

@@ -136,12 +136,14 @@ $order_statuses = [
     }
 
     .table-container {
-        overflow-x: auto;
+        overflow-x: hidden;
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
+        table-layout: fixed;
+        min-width: 0;
     }
 
     thead {
@@ -153,6 +155,19 @@ $order_statuses = [
         padding: 15px;
         text-align: left;
         border-bottom: 1px solid #eee;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Keep order number and customer name from forcing horizontal scroll */
+    table td:nth-child(1),
+    table th:nth-child(1),
+    table td:nth-child(3),
+    table th:nth-child(3) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     tbody tr:hover {

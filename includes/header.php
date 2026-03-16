@@ -134,6 +134,7 @@ include_once __DIR__ . '/cart_functions.php';
             margin: 0 !important;
         }
     </style>
+    <link rel="stylesheet" href="includes/image-sizing.css">
 </head>
 
 <body>

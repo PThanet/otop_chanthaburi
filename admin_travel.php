@@ -17,6 +17,25 @@ if ($current_role !== 'superadmin' && $current_role !== 'admin_travel') {
 
 include('includes/db_config.php');
 
+// --- อัตโนมัติสร้าง columns สำหรับหลายรูปภาพ (ถ้ายังไม่มี) ---
+$columns_to_check = ['image_url_2', 'image_url_3', 'image_url_4'];
+$existing_columns = [];
+
+$result = mysqli_query($conn, "DESCRIBE travel_places");
+while ($row = mysqli_fetch_assoc($result)) {
+    $existing_columns[] = $row['Field'];
+}
+
+if (!in_array('image_url_2', $existing_columns)) {
+    @mysqli_query($conn, "ALTER TABLE `travel_places` ADD COLUMN `image_url_2` VARCHAR(255) DEFAULT NULL AFTER `image_url`");
+}
+if (!in_array('image_url_3', $existing_columns)) {
+    @mysqli_query($conn, "ALTER TABLE `travel_places` ADD COLUMN `image_url_3` VARCHAR(255) DEFAULT NULL AFTER `image_url_2`");
+}
+if (!in_array('image_url_4', $existing_columns)) {
+    @mysqli_query($conn, "ALTER TABLE `travel_places` ADD COLUMN `image_url_4` VARCHAR(255) DEFAULT NULL AFTER `image_url_3`");
+}
+
 // --- จัดการการลบข้อมูล (Delete) ---
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
@@ -32,17 +51,23 @@ if (isset($_POST['add_place'])) {
     $desc = mysqli_real_escape_string($conn, $_POST['description']);
     $tag = mysqli_real_escape_string($conn, $_POST['tag']);
     
-    $img = '';
-    if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] == 0) {
-        $file_extension = pathinfo($_FILES["image_file"]["name"], PATHINFO_EXTENSION);
-        $new_filename = uniqid() . '.' . $file_extension;
-        $target_file = "uploads/travel/" . $new_filename;
-        if (move_uploaded_file($_FILES["image_file"]["tmp_name"], $target_file)) {
-            $img = $target_file;
+    $images = ['', '', '', ''];
+    
+    // จัดการอัปโหลดรูปภาพ (สูงสุด 4 รูป)
+    for ($i = 0; $i < 4; $i++) {
+        $file_key = 'image_file_' . ($i + 1);
+        if (isset($_FILES[$file_key]) && $_FILES[$file_key]['error'] == 0) {
+            $file_extension = pathinfo($_FILES[$file_key]["name"], PATHINFO_EXTENSION);
+            $new_filename = uniqid() . '.' . $file_extension;
+            $target_file = "uploads/travel/" . $new_filename;
+            if (move_uploaded_file($_FILES[$file_key]["tmp_name"], $target_file)) {
+                $images[$i] = $target_file;
+            }
         }
     }
 
-    $sql_insert = "INSERT INTO travel_places (name, description, image_url, tag) VALUES ('$name', '$desc', '$img', '$tag')";
+    $sql_insert = "INSERT INTO travel_places (name, description, image_url, image_url_2, image_url_3, image_url_4, tag) 
+                   VALUES ('$name', '$desc', '$images[0]', '$images[1]', '$images[2]', '$images[3]', '$tag')";
     if (mysqli_query($conn, $sql_insert)) {
         echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'เพิ่มข้อมูลสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_travel.php'; }); }, 100);</script>";
     }
@@ -54,19 +79,35 @@ if (isset($_POST['update_place'])) {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $desc = mysqli_real_escape_string($conn, $_POST['description']);
     $tag = mysqli_real_escape_string($conn, $_POST['tag']);
-    $existing_image = mysqli_real_escape_string($conn, $_POST['existing_image']);
+    
+    $images = [];
+    for ($i = 1; $i <= 4; $i++) {
+        $key = 'existing_image_' . $i;
+        $images[$i-1] = isset($_POST[$key]) ? mysqli_real_escape_string($conn, $_POST[$key]) : '';
+    }
 
-    $img = $existing_image;
-    if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] == 0) {
-        $file_extension = pathinfo($_FILES["image_file"]["name"], PATHINFO_EXTENSION);
-        $new_filename = uniqid() . '.' . $file_extension;
-        $target_file = "uploads/travel/" . $new_filename;
-        if (move_uploaded_file($_FILES["image_file"]["tmp_name"], $target_file)) {
-            $img = $target_file;
+    // จัดการอัปโหลดรูปภาพใหม่
+    for ($i = 0; $i < 4; $i++) {
+        $file_key = 'image_file_' . ($i + 1);
+        if (isset($_FILES[$file_key]) && $_FILES[$file_key]['error'] == 0) {
+            $file_extension = pathinfo($_FILES[$file_key]["name"], PATHINFO_EXTENSION);
+            $new_filename = uniqid() . '.' . $file_extension;
+            $target_file = "uploads/travel/" . $new_filename;
+            if (move_uploaded_file($_FILES[$file_key]["tmp_name"], $target_file)) {
+                $images[$i] = $target_file;
+            }
         }
     }
 
-    $sql_update = "UPDATE travel_places SET name='$name', description='$desc', image_url='$img', tag='$tag' WHERE id=$id";
+    $sql_update = "UPDATE travel_places SET 
+                   name='$name', 
+                   description='$desc', 
+                   image_url='$images[0]', 
+                   image_url_2='$images[1]', 
+                   image_url_3='$images[2]', 
+                   image_url_4='$images[3]', 
+                   tag='$tag' 
+                   WHERE id=$id";
     if (mysqli_query($conn, $sql_update)) {
         echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'อัปเดตข้อมูลสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_travel.php'; }); }, 100);</script>";
     }
@@ -105,7 +146,10 @@ include('includes/header.php');
                     <form method="POST" action="admin_travel.php" enctype="multipart/form-data">
                         <?php if($edit_data): ?>
                             <input type="hidden" name="id" value="<?= $edit_data['id'] ?>">
-                            <input type="hidden" name="existing_image" value="<?= htmlspecialchars($edit_data['image_url']) ?>">
+                            <input type="hidden" name="existing_image_1" value="<?= htmlspecialchars($edit_data['image_url'] ?? '') ?>">
+                            <input type="hidden" name="existing_image_2" value="<?= htmlspecialchars($edit_data['image_url_2'] ?? '') ?>">
+                            <input type="hidden" name="existing_image_3" value="<?= htmlspecialchars($edit_data['image_url_3'] ?? '') ?>">
+                            <input type="hidden" name="existing_image_4" value="<?= htmlspecialchars($edit_data['image_url_4'] ?? '') ?>">
                         <?php endif; ?>
 
                         <div class="mb-3">
@@ -117,18 +161,29 @@ include('includes/header.php');
                             <textarea name="description" class="form-control" rows="3" required><?= $edit_data ? htmlspecialchars($edit_data['description']) : '' ?></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">อัปโหลดรูปภาพสถานที่</label>
-                            <?php if($edit_data && $edit_data['image_url']): ?>
-                                <div class="mb-2">
-                                    <img src="<?= htmlspecialchars($edit_data['image_url']) ?>" alt="Current Image" class="img-thumbnail" style="height:100px; object-fit:cover;">
-                                </div>
-                                <small class="text-muted d-block mb-2">เลือกไฟล์ใหม่หากต้องการเปลี่ยนรูป</small>
-                            <?php endif; ?>
-                            <input type="file" name="image_file" class="form-control" accept="image/*" <?= $edit_data ? '' : 'required' ?>>
-                        </div>
-                        <div class="mb-4">
                             <label class="form-label fw-bold">ป้ายกำกับ (Tag)</label>
                             <input type="text" name="tag" class="form-control" placeholder="เช่น ธรรมชาติ, ทะเล, วัด" value="<?= $edit_data ? htmlspecialchars($edit_data['tag']) : '' ?>" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold"><i class="fas fa-images me-2"></i>อัปโหลดหลายรูปภาพ (สูงสุด 4 รูป)</label>
+                            <small class="text-muted d-block mb-3">ระบบจะปรับขนาดรูปภาพให้เท่ากันโดยอัตโนมัติ</small>
+                            
+                            <?php for ($i = 1; $i <= 4; $i++): 
+                                $img_key = 'image_url' . ($i > 1 ? '_' . $i : '');
+                                $img_src = $edit_data ? ($edit_data[$img_key] ?? '') : '';
+                            ?>
+                                <div class="mb-3 p-3 border rounded" style="background: #f8f9fa;">
+                                    <label class="form-label fw-bold mb-2">รูปภาพที่ <?= $i ?></label>
+                                    <?php if($edit_data && $img_src): ?>
+                                        <div class="mb-2 text-center">
+                                            <img src="<?= htmlspecialchars($img_src) ?>" alt="Image <?= $i ?>" class="img-thumbnail rounded" style="max-height:100px; object-fit:cover;">
+                                        </div>
+                                        <small class="text-muted d-block mb-2">เลือกไฟล์ใหม่หากต้องการเปลี่ยน</small>
+                                    <?php endif; ?>
+                                    <input type="file" name="image_file_<?= $i ?>" class="form-control" accept="image/*" <?= ($i === 1 && !$edit_data) ? 'required' : '' ?>>
+                                </div>
+                            <?php endfor; ?>
                         </div>
 
                         <?php if($edit_data): ?>
