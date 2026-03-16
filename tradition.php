@@ -9,6 +9,7 @@
         background: #fff;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         height: 100%;
+        cursor: pointer;
     }
 
     .tradition-card:hover {
@@ -35,6 +36,11 @@
     .tradition-card:hover .tradition-icon-wrapper img {
         transform: scale(1.1);
     }
+
+    a[href*="tradition_detail.php"] {
+        text-decoration: none !important;
+        color: inherit !important;
+    }
 </style>
 
 <div class="container my-5 py-4">
@@ -53,26 +59,40 @@
         if (mysqli_num_rows($result) > 0) {
             while ($item = mysqli_fetch_assoc($result)): ?>
                 <div class="col-lg-4 col-md-6">
-                    <div class="tradition-card text-center">
-                        <div class="tradition-icon-wrapper">
-                            <?php 
-                                $img_src = !empty($item['image_url']) ? htmlspecialchars($item['image_url']) : 'otop/placeholder_tradition.png';
-                                // In case it still has old font-awesome classes, fallback to a placeholder
-                                if (strpos($img_src, 'fa-') !== false) {
-                                    $img_src = 'otop/placeholder_tradition.png';
-                                }
-                            ?>
-                            <img src="<?= $img_src ?>" alt="<?= htmlspecialchars($item['name']) ?>">
+                    <a href="tradition_detail.php?id=<?= $item['id'] ?>" style="text-decoration: none; color: inherit;">
+                        <div class="tradition-card text-center">
+                            <div class="tradition-icon-wrapper">
+                                <?php 
+                                    $img_src = !empty($item['image_url']) ? htmlspecialchars($item['image_url']) : 'otop/placeholder_tradition.png';
+                                    // In case it still has old font-awesome classes, fallback to a placeholder
+                                    if (strpos($img_src, 'fa-') !== false) {
+                                        $img_src = 'otop/placeholder_tradition.png';
+                                    }
+                                ?>
+                                <img src="<?= $img_src ?>" alt="<?= htmlspecialchars($item['name']) ?>">
+                            </div>
+                            <div class="p-4">
+                                <h4 class="fw-bold mb-3">
+                                    <?= htmlspecialchars($item['name']) ?>
+                                </h4>
+                                <p class="text-muted" style="font-size: 0.95rem; line-height: 1.6;">
+                                    <?= htmlspecialchars($item['description']) ?>
+                                </p>
+                                <?php if (!empty($item['event_date'])): ?>
+                                    <div style="margin-top: 1rem;">
+                                        <span class="badge" style="background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%); color: #333;">
+                                            <i class="fas fa-calendar-alt me-1"></i><?= htmlspecialchars($item['event_date']) ?>
+                                        </span>
+                                    </div>
+                                <?php endif; ?>
+                                <div style="margin-top: 1rem;">
+                                    <span class="btn btn-sm btn-outline-success rounded-pill">
+                                        <i class="fas fa-arrow-right me-2"></i>ดูเพิ่มเติม
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="p-4">
-                            <h4 class="fw-bold mb-3">
-                                <?= htmlspecialchars($item['name']) ?>
-                            </h4>
-                            <p class="text-muted" style="font-size: 0.95rem; line-height: 1.6;">
-                                <?= htmlspecialchars($item['description']) ?>
-                            </p>
-                        </div>
-                    </div>
+                    </a>
                 </div>
             <?php endwhile;
         } else {

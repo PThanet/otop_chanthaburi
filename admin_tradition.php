@@ -17,7 +17,26 @@ if ($current_role !== 'superadmin' && $current_role !== 'admin_tradition') {
 
 include('includes/db_config.php');
 
-// --- จัดการการลบข้อมูล (Delete) ---
+// --- อัตโนมัติสร้าง columns สำหรับวันที่งาน (ถ้ายังไม่มี) ---
+$columns_to_check = ['event_date', 'event_details', 'event_location'];
+$existing_columns = [];
+
+// ตรวจสอบว่า columns มีอยู่แล้วหรือไม่
+$result = mysqli_query($conn, "DESCRIBE traditions");
+while ($row = mysqli_fetch_assoc($result)) {
+    $existing_columns[] = $row['Field'];
+}
+
+// เพิ่มเฉพาะ columns ที่ยังไม่มี
+if (!in_array('event_date', $existing_columns)) {
+    @mysqli_query($conn, "ALTER TABLE `traditions` ADD COLUMN `event_date` VARCHAR(50) DEFAULT NULL AFTER `description`");
+}
+if (!in_array('event_details', $existing_columns)) {
+    @mysqli_query($conn, "ALTER TABLE `traditions` ADD COLUMN `event_details` TEXT DEFAULT NULL AFTER `event_date`");
+}
+if (!in_array('event_location', $existing_columns)) {
+    @mysqli_query($conn, "ALTER TABLE `traditions` ADD COLUMN `event_location` VARCHAR(255) DEFAULT NULL AFTER `event_details`");
+}
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $sql_delete = "DELETE FROM traditions WHERE id = $id";
@@ -30,6 +49,9 @@ if (isset($_GET['delete'])) {
 if (isset($_POST['add_tradition'])) {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $desc = mysqli_real_escape_string($conn, $_POST['description']);
+    $event_date = mysqli_real_escape_string($conn, $_POST['event_date']);
+    $event_location = mysqli_real_escape_string($conn, $_POST['event_location']);
+    $event_details = mysqli_real_escape_string($conn, $_POST['event_details']);
     
     $img = '';
     if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] == 0) {
@@ -41,7 +63,7 @@ if (isset($_POST['add_tradition'])) {
         }
     }
 
-    $sql_insert = "INSERT INTO traditions (name, description, image_url) VALUES ('$name', '$desc', '$img')";
+    $sql_insert = "INSERT INTO traditions (name, description, image_url, event_date, event_location, event_details) VALUES ('$name', '$desc', '$img', '$event_date', '$event_location', '$event_details')";
     if (mysqli_query($conn, $sql_insert)) {
         echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'เพิ่มข้อมูลประเพณีสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_tradition.php'; }); }, 100);</script>";
     }
@@ -52,6 +74,9 @@ if (isset($_POST['update_tradition'])) {
     $id = intval($_POST['id']);
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $desc = mysqli_real_escape_string($conn, $_POST['description']);
+    $event_date = mysqli_real_escape_string($conn, $_POST['event_date']);
+    $event_location = mysqli_real_escape_string($conn, $_POST['event_location']);
+    $event_details = mysqli_real_escape_string($conn, $_POST['event_details']);
     $existing_image = mysqli_real_escape_string($conn, $_POST['existing_image']);
 
     $img = $existing_image;
@@ -64,7 +89,7 @@ if (isset($_POST['update_tradition'])) {
         }
     }
 
-    $sql_update = "UPDATE traditions SET name='$name', description='$desc', image_url='$img' WHERE id=$id";
+    $sql_update = "UPDATE traditions SET name='$name', description='$desc', image_url='$img', event_date='$event_date', event_location='$event_location', event_details='$event_details' WHERE id=$id";
     if (mysqli_query($conn, $sql_update)) {
         echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>setTimeout(function() { Swal.fire({title: 'อัปเดตข้อมูลประเพณีสำเร็จ!', icon: 'success', showConfirmButton: false, timer: 1500}).then(function() { window.location = 'admin_tradition.php'; }); }, 100);</script>";
     }
@@ -114,6 +139,19 @@ include('includes/header.php');
                             <label class="form-label fw-bold">คำบรรยาย</label>
                             <textarea name="description" class="form-control" rows="4" required><?= $edit_data ? htmlspecialchars($edit_data['description']) : '' ?></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">วันที่จัดงาน</label>
+                            <input type="text" name="event_date" class="form-control" placeholder="เช่น 22 มกราคม หรือ 22 December" value="<?= $edit_data ? htmlspecialchars($edit_data['event_date'] ?? '') : '' ?>">
+                            <small class="text-muted">ระบุวันที่และเดือนของการจัดงาน</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">สถานที่จัดงาน</label>
+                            <input type="text" name="event_location" class="form-control" placeholder="เช่น จันทบุรี, ลานเลอนาร์ด" value="<?= $edit_data ? htmlspecialchars($edit_data['event_location'] ?? '') : '' ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">ข้อมูลเพิ่มเติมเกี่ยวกับงาน</label>
+                            <textarea name="event_details" class="form-control" rows="3" placeholder="เช่น วัตถุประสงค์งาน, กิจกรรมพิเศษ, เวลาเปิด-ปิด"><?= $edit_data ? htmlspecialchars($edit_data['event_details'] ?? '') : '' ?></textarea>
+                        </div>
                         <div class="mb-4">
                             <label class="form-label fw-bold">อัปโหลดรูปภาพประเพณี</label>
                             <?php if($edit_data && isset($edit_data['image_url']) && $edit_data['image_url']): ?>
@@ -143,10 +181,11 @@ include('includes/header.php');
                         <table class="table table-hover align-middle text-center mb-0">
                             <thead class="table-primary">
                                 <tr>
-                                    <th width="10%">ไอคอน</th>
-                                    <th width="25%">ชื่องานประเพณี</th>
-                                    <th width="40%">คำบรรยาย</th>
-                                    <th width="25%">จัดการ</th>
+                                    <th width="8%">ไอคอน</th>
+                                    <th width="20%">ชื่องานประเพณี</th>
+                                    <th width="20%">วันที่จัดงาน</th>
+                                    <th width="26%">คำบรรยาย</th>
+                                    <th width="26%">จัดการ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -160,7 +199,14 @@ include('includes/header.php');
                                         $img_src = !empty($row['image_url']) ? htmlspecialchars($row['image_url']) : 'otop/placeholder_tradition.png';
                                         echo "<td><img src='" . $img_src . "' class='img-thumbnail rounded-circle shadow-sm' style='width: 60px; height: 60px; object-fit: cover;'></td>";
                                         echo "<td class='fw-bold'>".htmlspecialchars($row['name'])."</td>";
-                                        echo "<td class='text-start small text-muted text-truncate' style='max-width: 250px;'>".htmlspecialchars($row['description'])."</td>";
+                                        echo "<td class='small'>";
+                                        if (!empty($row['event_date'])) {
+                                            echo "<span class='badge bg-warning text-dark'><i class='fas fa-calendar-alt me-1'></i>".htmlspecialchars($row['event_date'])."</span>";
+                                        } else {
+                                            echo "<span class='badge bg-light text-dark'>ยังไม่มี</span>";
+                                        }
+                                        echo "</td>";
+                                        echo "<td class='text-start small text-muted text-truncate' style='max-width: 200px;'>".htmlspecialchars($row['description'])."</td>";
                                         echo "<td>
                                                 <a href='admin_tradition.php?edit={$row['id']}' class='btn btn-sm btn-info text-white mb-1 px-3 rounded-pill shadow-sm'><i class='fas fa-edit'></i> แก้ไข</a>
                                                 <a href='admin_tradition.php?delete={$row['id']}' class='btn btn-sm btn-danger mb-1 px-3 rounded-pill shadow-sm' onclick=\"event.preventDefault(); Swal.fire({title: 'ระวัง! คุณแน่ใจหรือไม่ที่จะลบประเพณีนี้?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'ตกลง', cancelButtonText: 'ยกเลิก'}).then((result) => { if (result.isConfirmed) { window.location.href = this.href; } })\"><i class='fas fa-trash'></i> ลบ</a>
@@ -168,7 +214,7 @@ include('includes/header.php');
                                         echo "</tr>";
                                     }
                                 } else {
-                                    echo "<tr><td colspan='4' class='py-4 text-muted'>ยังไม่มีข้อมูลงานประเพณี</td></tr>";
+                                    echo "<tr><td colspan='5' class='py-4 text-muted'>ยังไม่มีข้อมูลงานประเพณี</td></tr>";
                                 }
                                 ?>
                             </tbody>
