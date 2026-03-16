@@ -24,7 +24,8 @@ if (isset($_GET['delete'])) {
 }
 
 // Helper function
-function upload_image($file_input_name, $existing_image = '') {
+function upload_image($file_input_name, $existing_image = '')
+{
     $img = $existing_image;
     if (isset($_FILES[$file_input_name]) && $_FILES[$file_input_name]['error'] == 0) {
         $file_extension = pathinfo($_FILES[$file_input_name]["name"], PATHINFO_EXTENSION);
@@ -64,7 +65,7 @@ if (isset($_POST['update_product'])) {
     $desc = mysqli_real_escape_string($conn, $_POST['description']);
     $tag = mysqli_real_escape_string($conn, $_POST['tag']);
     $tag_color = mysqli_real_escape_string($conn, $_POST['tag_color']);
-    
+
     $image_url = upload_image('image_file', mysqli_real_escape_string($conn, $_POST['existing_image']));
     $image_url_2 = upload_image('image_file_2', mysqli_real_escape_string($conn, $_POST['existing_image_2']));
     $image_url_3 = upload_image('image_file_3', mysqli_real_escape_string($conn, $_POST['existing_image_3']));
@@ -114,7 +115,7 @@ include('includes/header.php');
         background: white;
         border-radius: 15px;
         padding: 2.5rem;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         margin-bottom: 2rem;
         border-top: 5px solid #ff6b35;
     }
@@ -216,7 +217,9 @@ include('includes/header.php');
         text-align: center;
     }
 
-    .file-input-hidden { display: none; }
+    .file-input-hidden {
+        display: none;
+    }
 
     .actions-cell {
         vertical-align: middle;
@@ -286,7 +289,7 @@ include('includes/header.php');
         background: white;
         border-radius: 15px;
         padding: 2rem;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         border-top: 5px solid #0d6efd;
         overflow-x: hidden;
     }
@@ -365,7 +368,8 @@ include('includes/header.php');
             grid-template-columns: 1fr;
         }
 
-        .admin-table th, .admin-table td {
+        .admin-table th,
+        .admin-table td {
             padding: 0.5rem;
             font-size: 0.85rem;
         }
@@ -386,7 +390,8 @@ include('includes/header.php');
             font-size: 0.8rem;
         }
 
-        .admin-table th, .admin-table td {
+        .admin-table th,
+        .admin-table td {
             padding: 0.5rem;
         }
 
@@ -449,49 +454,64 @@ include('includes/header.php');
     <div class="row">
         <div class="col-lg-5">
             <div class="form-section">
-                <h3><i class="fas fa-<?= $edit_data ? 'edit' : 'plus' ?> me-2"></i><?= $edit_data ? 'แก้ไขสินค้า' : 'เพิ่มสินค้าใหม่' ?></h3>
-                
+                <h3><i
+                        class="fas fa-<?= $edit_data ? 'edit' : 'plus' ?> me-2"></i><?= $edit_data ? 'แก้ไขสินค้า' : 'เพิ่มสินค้าใหม่' ?>
+                </h3>
+
                 <form method="POST" enctype="multipart/form-data">
-                    <?php if($edit_data): ?>
+                    <?php if ($edit_data): ?>
                         <input type="hidden" name="id" value="<?= $edit_data['id'] ?>">
-                        <input type="hidden" name="existing_image" value="<?= htmlspecialchars($edit_data['image_url'] ?? '') ?>">
-                        <input type="hidden" name="existing_image_2" value="<?= htmlspecialchars($edit_data['image_url_2'] ?? '') ?>">
-                        <input type="hidden" name="existing_image_3" value="<?= htmlspecialchars($edit_data['image_url_3'] ?? '') ?>">
-                        <input type="hidden" name="existing_image_4" value="<?= htmlspecialchars($edit_data['image_url_4'] ?? '') ?>">
+                        <input type="hidden" name="existing_image"
+                            value="<?= htmlspecialchars($edit_data['image_url'] ?? '') ?>">
+                        <input type="hidden" name="existing_image_2"
+                            value="<?= htmlspecialchars($edit_data['image_url_2'] ?? '') ?>">
+                        <input type="hidden" name="existing_image_3"
+                            value="<?= htmlspecialchars($edit_data['image_url_3'] ?? '') ?>">
+                        <input type="hidden" name="existing_image_4"
+                            value="<?= htmlspecialchars($edit_data['image_url_4'] ?? '') ?>">
                     <?php endif; ?>
 
                     <div class="form-group">
                         <label class="form-label"><i class="fas fa-heading"></i>ชื่อสินค้า</label>
-                        <input type="text" name="name" class="form-control" value="<?= $edit_data ? htmlspecialchars($edit_data['name']) : '' ?>" placeholder="ชื่อสินค้า OTOP" required>
+                        <input type="text" name="name" class="form-control"
+                            value="<?= $edit_data ? htmlspecialchars($edit_data['name']) : '' ?>"
+                            placeholder="ชื่อสินค้า OTOP" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label"><i class="fas fa-tag"></i>ราคา (บาท)</label>
-                        <input type="number" name="price" class="form-control price-input" value="<?= $edit_data ? htmlspecialchars($edit_data['price']) : '' ?>" placeholder="0.00" step="0.01" required>
+                        <input type="number" name="price" class="form-control price-input"
+                            value="<?= $edit_data ? htmlspecialchars($edit_data['price']) : '' ?>" placeholder="0.00"
+                            step="0.01" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label"><i class="fas fa-align-left"></i>คำอธิบายสินค้า</label>
-                        <textarea name="description" class="form-control" placeholder="อธิบายเกี่ยวกับสินค้า..." required><?= $edit_data ? htmlspecialchars($edit_data['description'] ?? '') : '' ?></textarea>
+                        <textarea name="description" class="form-control" placeholder="อธิบายเกี่ยวกับสินค้า..."
+                            required><?= $edit_data ? htmlspecialchars($edit_data['description'] ?? '') : '' ?></textarea>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label"><i class="fas fa-images"></i>รูปภาพ (สูงสุด 4 รูป)</label>
-                        <small style="color: #999; display: block; margin-bottom: 1rem;">รูปภาพจะปรับขนาดให้เท่ากันโดยอัตโนมัติ</small>
-                        
+                        <small
+                            style="color: #999; display: block; margin-bottom: 1rem;">รูปภาพจะปรับขนาดให้เท่ากันโดยอัตโนมัติ</small>
+
                         <div class="image-upload-group">
-                            <?php for ($i = 1; $i <= 4; $i++): 
+                            <?php for ($i = 1; $i <= 4; $i++):
                                 $img_key = $i === 1 ? 'image_url' : 'image_url_' . $i;
                                 $img_src = $edit_data ? ($edit_data[$img_key] ?? '') : '';
-                            ?>
+                                ?>
                                 <div class="image-upload-item">
-                                    <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; display: block; font-weight: 600;">รูปที่ <?= $i ?></div>
-                                    <?php if($img_src): ?>
+                                    <div
+                                        style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; display: block; font-weight: 600;">
+                                        รูปที่ <?= $i ?></div>
+                                    <?php if ($img_src): ?>
                                         <img src="<?= htmlspecialchars($img_src) ?>" class="image-box">
                                     <?php endif; ?>
                                     <label class="file-input-custom" data-image="<?= $i ?>">
                                         <i class="fas fa-cloud-upload-alt"></i> เลือกรูป
-                                        <input type="file" name="image_file_<?= $i ?>" class="file-input-hidden" accept="image/*" <?= ($i === 1 && !$edit_data) ? 'required' : '' ?>>
+                                        <input type="file" name="image_file_<?= $i ?>" class="file-input-hidden"
+                                            accept="image/*" <?= ($i === 1 && !$edit_data) ? 'required' : '' ?>>
                                     </label>
                                 </div>
                             <?php endfor; ?>
@@ -502,7 +522,8 @@ include('includes/header.php');
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label"><i class="fas fa-label"></i>ป้ายกำกับ</label>
-                                <input type="text" name="tag" class="form-control" placeholder="เช่น ขายดี, ยอดนิยม" value="<?= $edit_data ? htmlspecialchars($edit_data['tag']) : '' ?>" required>
+                                <input type="text" name="tag" class="form-control" placeholder="เช่น ขายดี, ยอดนิยม"
+                                    value="<?= $edit_data ? htmlspecialchars($edit_data['tag']) : '' ?>" required>
                             </div>
                         </div>
                         <div class="col-6">
@@ -510,20 +531,25 @@ include('includes/header.php');
                                 <label class="form-label"><i class="fas fa-palette"></i>สีป้าย</label>
                                 <select name="tag_color" class="form-select" required>
                                     <option value="bg-danger" <?= ($edit_data && $edit_data['tag_color'] == 'bg-danger') ? 'selected' : '' ?>>🔴 แดง</option>
-                                    <option value="bg-warning text-dark" <?= ($edit_data && $edit_data['tag_color'] == 'bg-warning text-dark') ? 'selected' : '' ?>>🟡 เหลือง</option>
+                                    <option value="bg-warning text-dark" <?= ($edit_data && $edit_data['tag_color'] == 'bg-warning text-dark') ? 'selected' : '' ?>>🟡 เหลือง
+                                    </option>
                                     <option value="bg-success" <?= ($edit_data && $edit_data['tag_color'] == 'bg-success') ? 'selected' : '' ?>>🟢เขียว</option>
-                                    <option value="bg-info text-dark" <?= ($edit_data && $edit_data['tag_color'] == 'bg-info text-dark') ? 'selected' : '' ?>>🔵 ฟ้า</option>
+                                    <option value="bg-info text-dark" <?= ($edit_data && $edit_data['tag_color'] == 'bg-info text-dark') ? 'selected' : '' ?>>🔵 ฟ้า
+                                    </option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" name="<?= $edit_data ? 'update_product' : 'add_product' ?>" class="btn-submit">
-                        <i class="fas fa-<?= $edit_data ? 'save' : 'plus' ?> me-2"></i><?= $edit_data ? 'บันทึกการแก้ไข' : 'เพิ่มข้อมูล' ?>
+                    <button type="submit" name="<?= $edit_data ? 'update_product' : 'add_product' ?>"
+                        class="btn-submit">
+                        <i
+                            class="fas fa-<?= $edit_data ? 'save' : 'plus' ?> me-2"></i><?= $edit_data ? 'บันทึกการแก้ไข' : 'เพิ่มข้อมูล' ?>
                     </button>
-                    
-                    <?php if($edit_data): ?>
-                        <a href="admin_product_manage.php" class="btn-cancel" style="text-decoration: none; display: inline-block;">ยกเลิก</a>
+
+                    <?php if ($edit_data): ?>
+                        <a href="admin_product_manage.php" class="btn-cancel"
+                            style="text-decoration: none; display: inline-block;">ยกเลิก</a>
                     <?php endif; ?>
                 </form>
             </div>
@@ -532,13 +558,13 @@ include('includes/header.php');
         <div class="col-lg-7">
             <div class="table-section">
                 <h3><i class="fas fa-list me-2"></i>รายการสินค้าทั้งหมด</h3>
-                
+
                 <?php
                 $sql = "SELECT * FROM otop_products ORDER BY id DESC";
                 $result = mysqli_query($conn, $sql);
-                
-                if(mysqli_num_rows($result) > 0):
-                ?>
+
+                if (mysqli_num_rows($result) > 0):
+                    ?>
                     <div>
                         <table class="admin-table">
                             <thead>
@@ -551,18 +577,26 @@ include('includes/header.php');
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while($row = mysqli_fetch_assoc($result)): ?>
+                                <?php while ($row = mysqli_fetch_assoc($result)): ?>
                                     <tr>
                                         <td style="text-align: center;">
                                             <img src="<?= htmlspecialchars($row['image_url']) ?>" class="table-image">
                                         </td>
                                         <td><strong><?= htmlspecialchars($row['name']) ?></strong></td>
-                                        <td style="text-align: center;"><span class="price-badge" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">฿<?= number_format($row['price'], 2) ?></span></td>
-                                        <td style="text-align: center;"><span class="badge <?= htmlspecialchars($row['tag_color']) ?>" style="padding: 0.5rem 0.8rem; font-size: 0.85rem; border-radius: 50px; font-weight: normal;"><?= htmlspecialchars($row['tag']) ?></span></td>
+                                        <td style="text-align: center;"><span class="price-badge"
+                                                style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">฿<?= number_format($row['price'], 2) ?></span>
+                                        </td>
+                                        <td style="text-align: center;"><span
+                                                class="badge <?= htmlspecialchars($row['tag_color']) ?>"
+                                                style="padding: 0.5rem 0.8rem; font-size: 0.85rem; border-radius: 50px; font-weight: normal;"><?= htmlspecialchars($row['tag']) ?></span>
+                                        </td>
                                         <td class="actions-cell">
                                             <div class="action-buttons">
-                                                <a href="admin_product_manage.php?edit=<?= $row['id'] ?>" class="btn-action btn-edit"><i class="fas fa-edit"></i> แก้ไข</a>
-                                                <a href="admin_product_manage.php?delete=<?= $row['id'] ?>" class="btn-action btn-delete" onclick="return confirm('ลบสินค้านี้?')"><i class="fas fa-trash"></i> ลบ</a>
+                                                <a href="admin_product_manage.php?edit=<?= $row['id'] ?>"
+                                                    class="btn-action btn-edit"><i class="fas fa-edit"></i> แก้ไข</a>
+                                                <a href="admin_product_manage.php?delete=<?= $row['id'] ?>"
+                                                    class="btn-action btn-delete" onclick="return confirm('ลบสินค้านี้?')"><i
+                                                        class="fas fa-trash"></i> ลบ</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -586,29 +620,29 @@ include('includes/header.php');
 <?php include('includes/footer.php'); ?>
 
 <script>
-// file input preview for product admin
-document.querySelectorAll('.file-input-custom').forEach(label => {
-    const input = label.querySelector('.file-input-hidden');
-    if (!input) return;
-    input.addEventListener('change', function() {
-        if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = label.parentElement.querySelector('.image-box');
-                if (preview) preview.src = e.target.result;
-                else {
-                    const img = document.createElement('img');
-                    img.className = 'image-box';
-                    img.src = e.target.result;
-                    label.parentElement.insertBefore(img, label);
-                }
-            };
-            reader.readAsDataURL(this.files[0]);
-            label.innerHTML = '<i class="fas fa-check-circle" style="color: #4caf50;"></i> ' + this.files[0].name;
-            label.style.background = '#fff7ed';
-            label.style.borderColor = '#ff6b35';
-            label.style.color = '#b8431d';
-        }
+    // file input preview for product admin
+    document.querySelectorAll('.file-input-custom').forEach(label => {
+        const input = label.querySelector('.file-input-hidden');
+        if (!input) return;
+        input.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = label.parentElement.querySelector('.image-box');
+                    if (preview) preview.src = e.target.result;
+                    else {
+                        const img = document.createElement('img');
+                        img.className = 'image-box';
+                        img.src = e.target.result;
+                        label.parentElement.insertBefore(img, label);
+                    }
+                };
+                reader.readAsDataURL(this.files[0]);
+                label.innerHTML = '<i class="fas fa-check-circle" style="color: #4caf50;"></i> ' + this.files[0].name;
+                label.style.background = '#fff7ed';
+                label.style.borderColor = '#ff6b35';
+                label.style.color = '#b8431d';
+            }
+        });
     });
-});
 </script>

@@ -131,7 +131,7 @@ include('includes/header.php');
 
 <style>
     .admin-header {
-        background: linear-gradient(135deg, #1a7059 0%, #2a9a6f 100%);
+        background: linear-gradient(135deg, #6f42c1 0%, #8554dd 100%);
         color: white;
         padding: 2rem 0;
         margin-bottom: 2rem;
@@ -149,11 +149,11 @@ include('includes/header.php');
         padding: 2.5rem;
         box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         margin-bottom: 2rem;
-        border-top: 5px solid #1a7059;
+        border-top: 5px solid #6f42c1;
     }
 
     .form-section h3 {
-        color: #1a7059;
+        color: #6f42c1;
         margin-bottom: 1.5rem;
         font-weight: 600;
         font-size: 1.5rem;
@@ -173,7 +173,7 @@ include('includes/header.php');
 
     .form-label i {
         margin-right: 0.5rem;
-        color: #1a7059;
+        color: #6f42c1;
     }
 
     .form-control {
@@ -186,8 +186,8 @@ include('includes/header.php');
     }
 
     .form-control:focus {
-        border-color: #1a7059;
-        box-shadow: 0 0 0 0.2rem rgba(26, 112, 89, 0.1);
+        border-color: #6f42c1;
+        box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.1);
         outline: none;
     }
 
@@ -211,7 +211,7 @@ include('includes/header.php');
 
     .image-upload-label {
         font-weight: 600;
-        color: #1a7059;
+        color: #6f42c1;
         margin-bottom: 0.5rem;
         font-size: 0.9rem;
     }
@@ -225,10 +225,10 @@ include('includes/header.php');
         width: 100%;
         padding: 0.75rem 0.5rem;
         background: #f8f9fa;
-        border: 2px dashed #1a7059;
+        border: 2px dashed #6f42c1;
         border-radius: 10px;
         text-align: center;
-        color: #1a7059;
+        color: #6f42c1;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -236,8 +236,8 @@ include('includes/header.php');
     }
 
     .file-input-custom:hover {
-        background: #e8f4f0;
-        border-color: #0d4630;
+        background: #f1edfa;
+        border-color: #5a32a3;
     }
 
     .file-input-hidden {
@@ -254,7 +254,7 @@ include('includes/header.php');
     }
 
     .btn-submit {
-        background: linear-gradient(135deg, #1a7059 0%, #2a9a6f 100%);
+        background: linear-gradient(135deg, #6f42c1 0%, #8554dd 100%);
         color: white;
         border: none;
         padding: 0.75rem 2rem;
@@ -268,7 +268,7 @@ include('includes/header.php');
 
     .btn-submit:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(26, 112, 89, 0.3);
+        box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
     }
 
     .btn-cancel {
@@ -634,10 +634,10 @@ document.querySelectorAll('.file-input-custom').forEach(label => {
                 }
             };
             reader.readAsDataURL(this.files[0]);
-            label.innerHTML = '<i class="fas fa-check-circle" style="color: #4caf50;"></i> ' + this.files[0].name;
-            label.style.background = '#e8f5e9';
-            label.style.borderColor = '#4caf50';
-            label.style.color = '#2e7d32';
+            label.innerHTML = '<i class="fas fa-check-circle" style="color: #6f42c1;"></i> ' + this.files[0].name;
+            label.style.background = '#f1edfa';
+            label.style.borderColor = '#6f42c1';
+            label.style.color = '#5a32a3';
         }
     });
 });

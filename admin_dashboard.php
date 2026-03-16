@@ -34,31 +34,33 @@ include('includes/db_config.php');
                         <h4 class="mb-1 fw-bold text-dark"><i class="fas fa-tools me-2"></i>จัดการเนื้อหาเว็บไซต์</h4>
                         <p class="text-muted mb-0 small">เมนูลัดสำหรับเพิ่ม ลบ หรือแก้ไขข้อมูลต่างๆ บนหน้าเว็บ</p>
                     </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <?php if ($current_admin_role === 'superadmin' || $current_admin_role === 'admin_travel'): ?>
-                            <a href="admin_travel_manage.php" class="btn btn-success btn-lg fw-bold rounded-pill shadow-sm px-4">
-                                <i class="fas fa-map-marked-alt me-2"></i>จัดการสถานที่ท่องเที่ยว
+                    <div class="d-flex flex-wrap gap-2 justify-content-md-end justify-content-center">
+                        <?php if ($current_admin_role === 'superadmin' || $current_admin_role === 'admin_product'): ?>
+                            <a href="admin_product_manage.php"
+                                class="btn btn-lg fw-bold rounded-pill shadow-sm px-4 text-white" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); border: none;">
+                                <i class="fas fa-shopping-basket me-2"></i>จัดการสินค้า OTOP
                             </a>
                         <?php endif; ?>
 
                         <?php if ($current_admin_role === 'superadmin' || $current_admin_role === 'admin_tradition'): ?>
                             <a href="admin_tradition_manage.php"
-                                class="btn btn-warning btn-lg fw-bold rounded-pill shadow-sm px-4 text-dark">
-                                <i class="fas fa-calendar-alt me-2"></i>จัดการงานประเพณี
+                                class="btn btn-lg fw-bold rounded-pill shadow-sm px-4 text-white" style="background: linear-gradient(135deg, #6f42c1 0%, #8554dd 100%); border: none;">
+                                <i class="fas fa-torii-gate me-2"></i>จัดการงานประเพณี
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if ($current_admin_role === 'superadmin' || $current_admin_role === 'admin_travel'): ?>
+                            <a href="admin_travel_manage.php" class="btn btn-lg fw-bold rounded-pill shadow-sm px-4 text-white" style="background: linear-gradient(135deg, #008B8B 0%, #20B2AA 100%); border: none;">
+                                <i class="fas fa-map-marked-alt me-2"></i>จัดการสถานที่ท่องเที่ยว
                             </a>
                         <?php endif; ?>
 
                         <?php if ($current_admin_role === 'superadmin' || $current_admin_role === 'admin_product'): ?>
-                            <a href="admin_product_manage.php"
-                                class="btn btn-info btn-lg fw-bold rounded-pill shadow-sm px-4 text-white">
-                                <i class="fas fa-shopping-basket me-2"></i>จัดการสินค้า OTOP
+                            <a href="admin_orders.php"
+                                class="btn btn-primary btn-lg fw-bold rounded-pill shadow-sm px-4 text-white" style="border: none;">
+                                <i class="fas fa-box me-2"></i>จัดการออเดอร์
                             </a>
                         <?php endif; ?>
-
-                        <a href="admin_orders.php"
-                            class="btn btn-primary btn-lg fw-bold rounded-pill shadow-sm px-4 text-white">
-                            <i class="fas fa-box me-2"></i>จัดการออเดอร์
-                        </a>
                     </div>
                 </div>
             </div>
@@ -118,24 +120,29 @@ include('includes/db_config.php');
 
                                 $role_display = "ผู้ดูแลระบบสูงสุด";
                                 $role_badge = "bg-danger";
+                                $role_style = "";
 
                                 if (isset($row['role'])) {
                                     switch ($row['role']) {
                                         case 'admin_travel':
                                             $role_display = "แอดมินสถานที่ท่องเที่ยว";
-                                            $role_badge = "bg-success";
+                                            $role_badge = "";
+                                            $role_style = "background: linear-gradient(135deg, #008B8B 0%, #20B2AA 100%); color: white;";
                                             break;
                                         case 'admin_tradition':
                                             $role_display = "แอดมินงานประเพณี";
-                                            $role_badge = "bg-warning text-dark";
+                                            $role_badge = "";
+                                            $role_style = "background: linear-gradient(135deg, #6f42c1 0%, #8554dd 100%); color: white;";
                                             break;
                                         case 'admin_product':
                                             $role_display = "แอดมินสินค้า OTOP";
-                                            $role_badge = "bg-info";
+                                            $role_badge = "";
+                                            $role_style = "background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); color: white;";
                                             break;
                                         case 'superadmin':
                                             $role_display = "ผู้ดูแลระบบสูงสุด";
                                             $role_badge = "bg-danger";
+                                            $role_style = "";
                                             break;
                                     }
                                 }
@@ -148,7 +155,7 @@ include('includes/db_config.php');
                                 }
 
                                 echo "<td>{$row['fullname']}</td>";
-                                echo "<td><span class='badge {$role_badge}'>{$role_display}</span></td>";
+                                echo "<td><span class='badge {$role_badge}' style='{$role_style} padding: 0.5em 0.8em; font-size: 0.85em; font-weight: 500;'>{$role_display}</span></td>";
 
                                 if ($current_admin_role === 'superadmin') {
                                     echo "<td>";
