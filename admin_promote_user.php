@@ -100,7 +100,8 @@ if (!$user) {
                         <p class="mb-0"><strong>ชื่อ-นามสกุล (Fullname):</strong> <?= htmlspecialchars($user['fullname']); ?></p>
                     </div>
                     
-                    <form action="admin_promote_user.php?id=<?= $id ?>" method="POST">
+                    <form id="promoteForm" action="admin_promote_user.php?id=<?= $id ?>" method="POST">
+                        <input type="hidden" name="confirm_promote" value="1">
                         <div class="mb-4 text-start">
                             <label for="admin_role" class="form-label fw-bold">เลือกตำแหน่งแอดมิน</label>
                             <select class="form-select form-select-lg" name="admin_role" id="admin_role" required>
@@ -112,7 +113,7 @@ if (!$user) {
                         </div>
                         <div class="d-flex justify-content-between mt-4">
                             <a href="admin_dashboard.php#users-table" class="btn btn-secondary px-4"><i class="fas fa-arrow-left me-2"></i>ยกเลิก</a>
-                            <button type="submit" name="confirm_promote" class="btn btn-success px-4"><i class="fas fa-check-circle me-2"></i>ยืนยันการแต่งตั้ง</button>
+                            <button type="button" onclick="confirmPromotion(event)" class="btn btn-success px-4"><i class="fas fa-check-circle me-2"></i>ยืนยันการแต่งตั้ง</button>
                         </div>
                     </form>
                 </div>
@@ -120,5 +121,29 @@ if (!$user) {
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmPromotion(event) {
+    event.preventDefault();
+    var roleSelect = document.getElementById('admin_role');
+    var roleText = roleSelect.options[roleSelect.selectedIndex].text;
+    
+    Swal.fire({
+        title: 'ยืนยันการแต่งตั้ง?',
+        html: "คุณต้องการแต่งตั้ง <strong>'<?= htmlspecialchars($user['fullname']); ?>'</strong><br>เป็น <strong>" + roleText + "</strong> ใช่หรือไม่?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'ใช่, ยืนยัน!',
+        cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('promoteForm').submit();
+        }
+    });
+}
+</script>
 
 <?php include('includes/footer.php'); ?>

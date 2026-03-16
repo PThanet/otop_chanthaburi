@@ -155,7 +155,7 @@ include_once __DIR__ . '/cart_functions.php';
 
                     <li class="nav-item ms-lg-2 cart-nav-item">
                         <a class="nav-link position-relative" href="cart.php" style="font-size: 1.2rem;">
-                            <i class="fas fa-shopping-cart"></i>
+                            <i class="fas fa-shopping-cart"></i> ตะกร้าสินค้า
                             <?php $cart_count = getCartCount(); ?>
                             <?php if ($cart_count > 0): ?>
                                 <span id="cart-badge"

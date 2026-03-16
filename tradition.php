@@ -17,7 +17,7 @@
     }
 
     .tradition-icon-wrapper {
-        height: 200px;
+        height: 280px;
         background: #f8f9fa;
         display: flex;
         align-items: center;
