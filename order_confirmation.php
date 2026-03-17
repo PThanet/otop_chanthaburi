@@ -209,6 +209,9 @@ if (!$order) {
         padding: 20px;
         border-radius: 8px;
         border: 1px solid #ddd;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .qr-code img {
@@ -471,8 +474,8 @@ if (!$order) {
                         </div>
                         <div class="bank-account">
                             <div class="bank-name">ธนาคารกรุงไทย</div>
-                            <div class="bank-detail">ชื่อบัญชี: บริษัท OTOP จันทบุรี</div>
-                            <div class="bank-detail">เลขที่บัญชี: <strong>123-456-7890</strong></div>
+                            <div class="bank-detail">ชื่อบัญชี: นาย ธเนตร พูลสุข</div>
+                            <div class="bank-detail">เลขที่บัญชี: <strong>722-0-80324-9</strong></div>
                             <div class="bank-detail">ประเภท: ออมทรัพย์</div>
                             <button class="copy-btn" onclick="copyToClipboard('123-456-7890')">
                                 <i class="fas fa-copy me-1"></i>คัดลอกเลขบัญชี
@@ -487,8 +490,8 @@ if (!$order) {
                         </div>
                         <div class="qr-code">
                             <p style="margin-bottom: 15px; color: #666;">สแกน QR Code เพื่อชำระเงิน</p>
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PROMPTPAY%7C0812345678%7C<?= urlencode($order['total_amount']) ?>" alt="QR Code">
-                            <p style="color: #999; font-size: 0.9rem;">PromptPay: 0812345678</p>
+                            <img src="otop/qrcode.jpg" alt="QR Code">
+                            <p style="color: #999; font-size: 0.9rem;">PromptPay: 0625498216</p>
                         </div>
                     </div>
 
